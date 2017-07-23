@@ -86,6 +86,7 @@ namespace Pizzeria
             });
 
             await CreateRoles(serviceProvider);
+            SeedData.InitializeMenu(serviceProvider);
         }
 
         /// <summary>

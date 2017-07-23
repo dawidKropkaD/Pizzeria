@@ -8,9 +8,10 @@ using Pizzeria.Data;
 namespace Pizzeria.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170723113755_Menu")]
+    partial class Menu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -171,36 +172,6 @@ namespace Pizzeria.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Pizzeria.Models.Menu", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Category")
-                        .IsRequired();
-
-                    b.Property<string>("Components");
-
-                    b.Property<bool>("IsInLocal");
-
-                    b.Property<bool>("IsOnline");
-
-                    b.Property<decimal>("Price");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired();
-
-                    b.Property<double?>("Size");
-
-                    b.Property<string>("SubCategory");
-
-                    b.Property<double?>("Weight");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Menu");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

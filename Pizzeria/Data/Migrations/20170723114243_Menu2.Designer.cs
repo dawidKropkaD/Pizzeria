@@ -8,9 +8,10 @@ using Pizzeria.Data;
 namespace Pizzeria.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170723114243_Menu2")]
+    partial class Menu2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -193,8 +194,6 @@ namespace Pizzeria.Data.Migrations
                         .IsRequired();
 
                     b.Property<double?>("Size");
-
-                    b.Property<string>("SubCategory");
 
                     b.Property<double?>("Weight");
 
