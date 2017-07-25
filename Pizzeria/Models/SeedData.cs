@@ -14,14 +14,14 @@ namespace Pizzeria.Models
         {
             var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
-            if (context.Menu.Any())
+            if (context.ProductDb.Any())
             {
                 return;
             }
 
-            context.Menu.AddRange(
+            context.ProductDb.AddRange(
             #region Pizza
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Margherita",
                     Category = "Pizza",
@@ -32,7 +32,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Margherita",
                     Category = "Pizza",
@@ -43,7 +43,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Fungi",
                     Category = "Pizza",
@@ -54,7 +54,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Fungi",
                     Category = "Pizza",
@@ -65,7 +65,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Salami",
                     Category = "Pizza",
@@ -76,7 +76,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Salami",
                     Category = "Pizza",
@@ -87,7 +87,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Rustica",
                     Category = "Pizza",
@@ -98,7 +98,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Rustica",
                     Category = "Pizza",
@@ -109,7 +109,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Wegetariana",
                     Category = "Pizza",
@@ -120,7 +120,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Wegetariana",
                     Category = "Pizza",
@@ -131,7 +131,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Amore",
                     Category = "Pizza",
@@ -142,7 +142,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Amore",
                     Category = "Pizza",
@@ -153,7 +153,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Hawajska",
                     Category = "Pizza",
@@ -164,7 +164,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Hawajska",
                     Category = "Pizza",
@@ -175,7 +175,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Wiejska",
                     Category = "Pizza",
@@ -186,7 +186,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Wiejska",
                     Category = "Pizza",
@@ -199,7 +199,7 @@ namespace Pizzeria.Models
             #endregion
 
             #region Sos
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sos czosnkowy",
                     Category = "Sos",
@@ -209,7 +209,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sos pomidorowy pikantny",
                     Category = "Sos",
@@ -219,7 +219,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sos pomidorowy łagodny",
                     Category = "Sos",
@@ -232,7 +232,7 @@ namespace Pizzeria.Models
 
             #region Sałatki
                 //SAŁATKI
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sałatka z tuńczykiem",
                     Category = "Sałatka",
@@ -242,7 +242,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sałatka amerykańska",
                     Category = "Sałatka",
@@ -252,7 +252,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sałatka grecka",
                     Category = "Sałatka",
@@ -262,7 +262,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Sałatka z łososiem",
                     Category = "Sałatka",
@@ -274,7 +274,7 @@ namespace Pizzeria.Models
             #endregion
 
             #region Napoje bezalkoholowe
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Czekolada na gorąco",
                     Category = "Napoje bezalkoholowe",
@@ -284,7 +284,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Mirinda 0,2l",
                     Category = "Napoje bezalkoholowe",
@@ -294,7 +294,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "7up 0,2l",
                     Category = "Napoje bezalkoholowe",
@@ -304,7 +304,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Pepsi 0,2l",
                     Category = "Napoje bezalkoholowe",
@@ -314,7 +314,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Rockstar",
                     Category = "Napoje bezalkoholowe",
@@ -324,7 +324,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Pepsi 0.5l",
                     Category = "Napoje bezalkoholowe",
@@ -334,7 +334,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Mirinda 0.5l",
                     Category = "Napoje bezalkoholowe",
@@ -344,7 +344,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Woda mineralna gazowana 0,5l",
                     Category = "Napoje bezalkoholowe",
@@ -354,7 +354,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Woda mineralna niegazowana 0,5l",
                     Category = "Napoje bezalkoholowe",
@@ -364,7 +364,7 @@ namespace Pizzeria.Models
                     IsOnline = true
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Kawa czarna",
                     Category = "Napoje bezalkoholowe",
@@ -374,7 +374,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Kawa espresso",
                     Category = "Napoje bezalkoholowe",
@@ -384,7 +384,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Kawa capuccino",
                     Category = "Napoje bezalkoholowe",
@@ -396,7 +396,7 @@ namespace Pizzeria.Models
             #endregion
 
             #region Mini pizze
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Margherita",
                     Category = "Mini pizza",
@@ -406,7 +406,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Fungi",
                     Category = "Mini pizza",
@@ -416,7 +416,7 @@ namespace Pizzeria.Models
                     IsOnline = false
                 },
 
-                new Menu
+                new ProductDb
                 {
                     ProductName = "Rafaello",
                     Category = "Mini pizza",

@@ -1,0 +1,58 @@
+﻿@model Pizzeria.ViewModels.MenuViewModel
+
+<br />
+
+@for (int i = 0; i < Model.CategoriesId.Count(); i++)
+{
+    <button id="@Model.CategoriesId[i]Btn" class="btn btn-default">@Model.Categories[i]</button>
+}
+
+<hr />
+
+@for (int i = 0; i < Model.Categories.Count(); i++)
+{
+    var productsByCategory = Model.Menu.Where(x => x.Category.Equals(Model.Categories[i])).ToList();
+    var productsWithoutSubcat = productsByCategory.Where(x => x.SubCategory == null).ToList();
+    var subCategories = productsByCategory.GroupBy(x => x.SubCategory).Select(g => g.First().SubCategory).Where(y => y != null).ToList();
+    string defaultDisplay = "none";
+
+    @if (Model.Categories[i].Equals("Pizza"))
+    {
+        defaultDisplay = "inline";
+    }
+    
+
+    <div id="@Model.CategoriesId[i]Div" style="display:@defaultDisplay">
+        @if (productsWithoutSubcat.Count != 0)
+        {
+            @Html.Partial("MenuPartialViews/DisplayByCategoryPartial", new Pizzeria.ViewModels.MenuViewModel(productsWithoutSubcat, Model.UserRoles, Model.CanOrderProduct))
+        }
+
+        @for (int j = 0; j < subCategories.Count(); j++)
+        {
+            @Html.Partial("MenuPartialViews/DisplayByCategoryPartial",
+                new Pizzeria.ViewModels.MenuViewModel(productsByCategory.Where(x => x.SubCategory.Equals(subCategories[j])).ToList(), Model.UserRoles, Model.CanOrderProduct))
+        }
+    </div>
+}
+
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+<script type="text/javascript">
+    var categoriesId = @Html.Raw(@Json.Serialize(Model.CategoriesId));
+
+    for (let i = 0; i < categoriesId.length; i++) {
+        $('#' + categoriesId[i] + 'Btn').click(function () {
+            HideMenu();
+            $('#' + categoriesId[i] + 'Div').show();
+        });
+    }
+
+    function HideMenu() {
+        for (let i = 0; i < categoriesId.length; i++) {
+            $('#' + categoriesId[i] + 'Div').hide();
+        }
+    }
+</script>

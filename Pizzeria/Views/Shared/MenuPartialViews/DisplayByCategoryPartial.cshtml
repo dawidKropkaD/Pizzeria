@@ -1,0 +1,68 @@
+﻿@model Pizzeria.ViewModels.MenuViewModel
+
+@if (Model.Menu[0].SubCategory != null)
+{
+    <h3>@Model.Menu[0].SubCategory</h3>
+}
+else
+{
+    <h3>@Model.Menu[0].Category</h3>
+}
+
+<table class="table">
+    <thead>
+        <tr class="bg-primary">
+            <th>
+                @Html.DisplayNameFor(model => model.Menu[0].ProductName)
+            </th>
+            @if (Model.Menu[0].Category.Equals("Pizza"))
+            {
+                @for (int i = 0; i < Model.Menu[0].Size.Count(); i++)
+                {
+                    <th style="text-align:right">
+                        ok. @Html.DisplayFor(model => Model.Menu[0].Size[i])cm
+                    </th>
+                }
+            }
+            else
+            {
+                <th style="text-align:right">
+                    @Html.DisplayNameFor(model => model.Menu[0].Price)
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Menu)
+        {
+            <tr>
+                <td>
+                    <strong>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </strong>
+                    <p class="small">
+                        @Html.DisplayFor(modelItem => item.Components)
+                        @if (item.Weight != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Weight)<span>g</span>
+                        }
+                    </p>
+                </td>
+                @foreach (var price in item.Price)
+                {
+                    <td style="text-align:right">
+                        @if (Model.CanOrderProduct)
+                        {
+                            @Html.Partial("MenuPartialViews/AddProductToBasketPartial",
+                            new ViewDataDictionary(this.ViewData) { { "ProductName", item.ProductName }, { "ProductCategory", item.Category }, { "Price", price } })
+                        }
+                        else
+                        {
+                            @Html.Partial("MenuPartialViews/DisplayPricePartial", price)
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

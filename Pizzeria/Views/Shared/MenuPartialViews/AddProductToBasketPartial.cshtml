@@ -1,0 +1,5 @@
+﻿<form asp-action="AddToBasket">
+    <input type="hidden" name="@ViewData["ProductName"]" />
+    <input type="hidden" name="@ViewData["ProductCategory"]" />
+    <input type="submit" value="@ViewData["Price"] zł" class="btn btn-default" />
+</form>

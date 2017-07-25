@@ -1,0 +1,72 @@
+@model Pizzeria.Models.ProductDb
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Menu</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubCategory)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubCategory)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Components)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Components)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Weight)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Weight)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsInLocal)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsInLocal)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsOnline)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsOnline)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

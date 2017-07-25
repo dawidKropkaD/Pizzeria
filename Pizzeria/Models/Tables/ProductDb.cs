@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pizzeria.Models
 {
-    public class Menu
+    public class ProductDb
     {
         public int ID { get; set; }
 
