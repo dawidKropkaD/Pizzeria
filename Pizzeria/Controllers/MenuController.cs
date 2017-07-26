@@ -11,6 +11,7 @@ using Pizzeria.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pizzeria.Controllers
 {
@@ -50,6 +51,7 @@ namespace Pizzeria.Controllers
             return View(menuVM);
         }
 
+
         public async Task<IActionResult> OnlineMenu()
         {
             List<ProductDb> productDbList = await _context.ProductDb.Where(x => x.IsOnline == true).ToListAsync();
@@ -72,35 +74,40 @@ namespace Pizzeria.Controllers
             return View(menuVM);
         }
 
+
         // GET: Menu/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Details(string productName, string category, decimal price)
         {
-            if (id == null)
+            if (productName == null || category == null)
             {
                 return NotFound();
             }
 
-            var menu = await _context.ProductDb
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (menu == null)
+            var productDb = await _context.ProductDb.SingleOrDefaultAsync(m => m.ProductName.Equals(productName) && m.Category.Equals(category) && m.Price == price);
+            if (productDb == null)
             {
                 return NotFound();
             }
 
-            return View(menu);
+            return View(productDb);
         }
 
+
         // GET: Menu/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
+
 
         // POST: Menu/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline")] ProductDb menu)
         {
             if (ModelState.IsValid)
@@ -112,30 +119,35 @@ namespace Pizzeria.Controllers
             return View(menu);
         }
 
+
         // GET: Menu/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(string productName, string category, decimal price)
         {
-            if (id == null)
+            if (productName == null || category == null)
             {
                 return NotFound();
             }
 
-            var menu = await _context.ProductDb.SingleOrDefaultAsync(m => m.ID == id);
-            if (menu == null)
+            var productDb = await _context.ProductDb.SingleOrDefaultAsync(m => m.ProductName.Equals(productName) && m.Category.Equals(category) && m.Price == price);
+            if (productDb == null)
             {
                 return NotFound();
             }
-            return View(menu);
+
+            return View(productDb);
         }
+
 
         // POST: Menu/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline")] ProductDb menu)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline")] ProductDb productDb)
         {
-            if (id != menu.ID)
+            if (id != productDb.ID)
             {
                 return NotFound();
             }
@@ -144,12 +156,12 @@ namespace Pizzeria.Controllers
             {
                 try
                 {
-                    _context.Update(menu);
+                    _context.Update(productDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MenuExists(menu.ID))
+                    if (!ProductDbExists(productDb.ID))
                     {
                         return NotFound();
                     }
@@ -160,39 +172,42 @@ namespace Pizzeria.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(menu);
+            return View(productDb);
         }
+
 
         // GET: Menu/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string productName, string category, decimal price)
         {
-            if (id == null)
+            if (productName == null || category == null)
             {
                 return NotFound();
             }
 
-            var menu = await _context.ProductDb
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (menu == null)
+            var productDb = await _context.ProductDb.SingleOrDefaultAsync(m => m.ProductName.Equals(productName) && m.Category.Equals(category) && m.Price == price);
+            if (productDb == null)
             {
                 return NotFound();
             }
 
-            return View(menu);
+            return View(productDb);
         }
+
 
         // POST: Menu/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var menu = await _context.ProductDb.SingleOrDefaultAsync(m => m.ID == id);
-            _context.ProductDb.Remove(menu);
+            var productDb = await _context.ProductDb.SingleOrDefaultAsync(m => m.ID == id);
+            _context.ProductDb.Remove(productDb);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool MenuExists(int id)
+        private bool ProductDbExists(int id)
         {
             return _context.ProductDb.Any(e => e.ID == id);
         }

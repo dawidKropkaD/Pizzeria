@@ -13,6 +13,8 @@ using Pizzeria.Data;
 using Pizzeria.Models;
 using Pizzeria.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace Pizzeria
 {
@@ -71,6 +73,28 @@ namespace Pizzeria
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("en-AU"),
+                new CultureInfo("en-GB"),
+                new CultureInfo("en"),
+                new CultureInfo("es-ES"),
+                new CultureInfo("es-MX"),
+                new CultureInfo("es"),
+                new CultureInfo("fr-FR"),
+                new CultureInfo("fr"),
+            };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseStaticFiles();
 

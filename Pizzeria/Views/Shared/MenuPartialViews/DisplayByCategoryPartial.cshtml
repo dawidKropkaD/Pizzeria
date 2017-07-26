@@ -22,6 +22,10 @@ else
                     <th style="text-align:right">
                         ok. @Html.DisplayFor(model => Model.Menu[0].Size[i])cm
                     </th>
+                    @if (Model.UserRoles != null && Model.UserRoles.Contains("Admin"))
+                    {
+                        <th style="text-align:right"></th>
+                    }
                 }
             }
             else
@@ -29,6 +33,10 @@ else
                 <th style="text-align:right">
                     @Html.DisplayNameFor(model => model.Menu[0].Price)
                 </th>
+                @if (Model.UserRoles != null && Model.UserRoles.Contains("Admin"))
+                {
+                    <th style="text-align:right"></th>
+                }
             }
         </tr>
     </thead>
@@ -61,6 +69,29 @@ else
                             @Html.Partial("MenuPartialViews/DisplayPricePartial", price)
                         }
                     </td>
+                    @if (Model.UserRoles != null && Model.UserRoles.Contains("Admin"))
+                    {
+                        <td style="text-align:right" width="100">
+                            <form asp-action="Edit" method="get">
+                                <input type="hidden" name="ProductName" value="@item.ProductName" />
+                                <input type="hidden" name="Category" value="@item.Category" />
+                                <input type="hidden" name="Price" value="@price" />
+                                <input type="submit" value="Edytuj" class="btn btn-link" />
+                            </form>
+                            <form asp-action="Delete" method="get">
+                                <input type="hidden" name="ProductName" value="@item.ProductName" />
+                                <input type="hidden" name="Category" value="@item.Category" />
+                                <input type="hidden" name="Price" value="@price" />
+                                <input type="submit" value="Usuń" class="btn btn-link" />
+                            </form>
+                            <form asp-action="Details" method="get">
+                                <input type="hidden" name="ProductName" value="@item.ProductName" />
+                                <input type="hidden" name="Category" value="@item.Category" />
+                                <input type="hidden" name="Price" value="@price" />
+                                <input type="submit" value="Szczegóły" class="btn btn-link" />
+                            </form>
+                        </td>
+                    }
                 }
             </tr>
         }

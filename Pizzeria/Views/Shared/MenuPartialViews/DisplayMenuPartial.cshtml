@@ -2,6 +2,12 @@
 
 <br />
 
+@if (Model.UserRoles != null && Model.UserRoles.Contains("Admin"))
+{
+    <a asp-action="Create">Dodaj produkt</a>
+    <hr />
+}
+
 @for (int i = 0; i < Model.CategoriesId.Count(); i++)
 {
     <button id="@Model.CategoriesId[i]Btn" class="btn btn-default">@Model.Categories[i]</button>
@@ -30,8 +36,9 @@
 
         @for (int j = 0; j < subCategories.Count(); j++)
         {
+            var tmp = productsByCategory.Where(x => x.SubCategory != null && x.SubCategory.Equals(subCategories[j])).ToList();
             @Html.Partial("MenuPartialViews/DisplayByCategoryPartial",
-                new Pizzeria.ViewModels.MenuViewModel(productsByCategory.Where(x => x.SubCategory.Equals(subCategories[j])).ToList(), Model.UserRoles, Model.CanOrderProduct))
+                new Pizzeria.ViewModels.MenuViewModel(tmp, Model.UserRoles, Model.CanOrderProduct))
         }
     </div>
 }
