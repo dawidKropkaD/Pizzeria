@@ -1,0 +1,30 @@
+﻿@model Pizzeria.ViewModels.SelectAdditionalComponentsViewModel
+@{
+    ViewData["Title"] = "Wybór dodatkowych składników do zamówienia";
+}
+
+<h2>Wybór dodatkowych składników do zamówienia</h2>
+<hr />
+
+<h4 style="display:inline"><strong>@Model.ProductName</strong></h4>:
+<span style="display:inline">@Model.ProductComponents</span>
+<br /><br />
+<label asp-for="@Model.PriceOfOrder"></label>:
+@Html.DisplayFor(model => model.PriceOfOrder) zł
+<br /><br />
+
+<form asp-action="AddToBasket">
+    Dodatkowe składniki
+    <br />
+
+    @foreach (var item in Model.AdditionalComponentDetails)
+    {
+        <input type="checkbox" name="additionaComponentsIDs" value="@item.Item1" />
+        @Html.DisplayFor(model => item.Item2)
+        <span>(</span>@Html.DisplayFor(model => item.Item3)<span>)</span>
+        <br />
+    }
+    <br />
+    <input type="hidden" name="productId" value="@Model.ProductId" />
+    <input type="submit" value="Dalej" class="btn btn-default" />
+</form>

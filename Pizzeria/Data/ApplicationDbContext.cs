@@ -16,6 +16,7 @@ namespace Pizzeria.Data
         }
 
         public DbSet<ProductDb> ProductDb { get; set; }
+        public DbSet<AdditionalComponent> AdditionaComponent { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

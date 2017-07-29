@@ -1,0 +1,69 @@
+﻿@model Pizzeria.ViewModels.BasketViewModel
+
+@{
+    ViewData["Title"] = "Koszyk";
+}
+
+<h2>Koszyk</h2>
+
+<table class="table">
+    <thead>
+        <tr class="bg-primary">
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].ProductName)
+            </th>
+            <th>
+                Rodzaj
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Products[0].ProductPrice)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Products.Count(); i++)
+        {
+            <tr>
+                <td>
+                    <strong>
+                        @Html.DisplayFor(modelItem => Model.Products[i].ProductName)
+                    </strong>
+                    <p class="small">
+                        @Html.DisplayFor(modelItem => Model.Products[i].ProductComponents)<br />
+                        @if (!string.IsNullOrEmpty(Model.Products[i].AdditionalComponents))
+                        {
+                            @Html.DisplayNameFor(model => model.Products[0].AdditionalComponents)<span>: </span>
+                            @Html.DisplayFor(modelItem => Model.Products[i].AdditionalComponents)
+                        }
+                        @if (Model.Products[i].Weight != null)
+                        {
+                            @Html.DisplayFor(modelItem => Model.Products[i].Weight)<span>g</span>
+                        }
+                    </p>
+                </td>
+                <td>
+                    @if (Model.Products[i].Size != null)
+                    {
+                        <span>ok </span>@Model.Products[i].Size<span>cm</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Products[i].ProductPrice)
+                </td>
+                <td>
+                    <form asp-action="DeleteFromBasket">
+                        <input type="hidden" name="productIndex" value="@i" />
+                        <input type="submit" value="Usuń" class="btn btn-link" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="float:right">
+    Wartość zamówienia: @Model.OrderPrice zł<br /><br />
+    <form asp-action="DeliveryPlace" method="get">
+        <input type="submit" value="To wszystko, dostawa" class="btn btn-default" />
+    </form>
+</div>

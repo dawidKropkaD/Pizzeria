@@ -52,6 +52,14 @@ namespace Pizzeria
 
             services.AddMvc();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.CookieHttpOnly = true;
+            });
+
+
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
@@ -100,6 +108,8 @@ namespace Pizzeria
 
             app.UseIdentity();
 
+            app.UseSession();
+
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
@@ -111,6 +121,7 @@ namespace Pizzeria
 
             await CreateRoles(serviceProvider);
             SeedData.InitializeMenu(serviceProvider);
+            SeedData.InitializeAdditionalComponents(serviceProvider);
         }
 
         /// <summary>

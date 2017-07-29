@@ -430,5 +430,56 @@ namespace Pizzeria.Models
 
             context.SaveChanges();
         }
+
+        public static void InitializeAdditionalComponents(IServiceProvider serviceProvider)
+        {
+            var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
+
+            if (context.AdditionaComponent.Any())
+            {
+                return;
+            }
+
+            context.AdditionaComponent.AddRange(
+                new AdditionalComponent
+                {
+                    Name = "Ananas",
+                    Category = "Pizza",
+                    Price = 2.80M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Brokuły",
+                    Category = "Pizza",
+                    Price = 2.80M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Cebula",
+                    Category = "Pizza",
+                    Price = 2.80M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Curry",
+                    Category = "Pizza",
+                    Price = 2.80M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Fasola czerwona",
+                    Category = "Pizza",
+                    Price = 2.80M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Cukier",
+                    Category = "Kawa",
+                    Price = 0.99M
+                }
+            );
+
+            context.SaveChanges();
+        }
     }
 }
