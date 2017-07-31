@@ -1,0 +1,25 @@
+﻿@model Pizzeria.ViewModels.DeliveryFormViewModel
+
+@{
+    ViewData["Title"] = "Formularz dostawy";
+}
+
+<h2>Formularz dostawy</h2>
+<hr />
+
+<form asp-action="DeliveryForm">
+    <div class="form-horizontal">
+        @Html.Partial("_DeliveryFormPartial", Model, new ViewDataDictionary(ViewData) { { "Header", "Dane klienta" } })
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Złóż zamówienie" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

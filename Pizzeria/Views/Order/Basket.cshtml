@@ -63,7 +63,5 @@
 </table>
 <div style="float:right">
     Wartość zamówienia: @Model.OrderPrice zł<br /><br />
-    <form asp-action="DeliveryPlace" method="get">
-        <input type="submit" value="To wszystko, dostawa" class="btn btn-default" />
-    </form>
+    <a asp-action="DeliveryForm" class="btn btn-default">To wszystko, dostawa</a>
 </div>

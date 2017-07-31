@@ -8,9 +8,10 @@ using Pizzeria.Data;
 namespace Pizzeria.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170730151933_AddOrderAddress")]
+    partial class AddOrderAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -228,15 +229,11 @@ namespace Pizzeria.Data.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<string>("ClientName");
-
                     b.Property<DateTime>("Date");
 
                     b.Property<string>("FlatNumber");
 
                     b.Property<string>("HouseNumber");
-
-                    b.Property<int>("Phone");
 
                     b.Property<string>("Street");
 

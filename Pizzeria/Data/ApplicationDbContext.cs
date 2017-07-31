@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Pizzeria.Models.Tables;
 using Pizzeria.Models;
 
 namespace Pizzeria.Data
@@ -17,6 +18,8 @@ namespace Pizzeria.Data
 
         public DbSet<ProductDb> ProductDb { get; set; }
         public DbSet<AdditionalComponent> AdditionaComponent { get; set; }
+        public DbSet<OrderedProduct> OrderedProduct { get; set; }
+        public DbSet<Order> Order { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

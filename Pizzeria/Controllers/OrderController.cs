@@ -8,16 +8,21 @@ using Pizzeria.Data;
 using Pizzeria.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using Pizzeria.Models.Tables;
 
 namespace Pizzeria.Controllers
 {
     public class OrderController : Controller
     {
         private readonly Data.ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrderController(ApplicationDbContext context)
+        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -76,6 +81,7 @@ namespace Pizzeria.Controllers
                 return View("EmptyBasket");
             }
 
+            OrderBusinessLayer orderBL = new OrderBusinessLayer();
             BasketViewModel basketVM = new BasketViewModel();
 
             for (int i = 0; i < basket.Count(); i++)
@@ -85,16 +91,11 @@ namespace Pizzeria.Controllers
                     continue;
 
                 var additionalComponent = _context.AdditionaComponent.Where(x => basket[i].Item2.Contains(x.ID)).ToList();
-                var additionalComponentName = additionalComponent.Select(x => x.Name).ToList();
 
-                decimal productPrice = productDb.Price;
-                foreach (var item in additionalComponent)
-                {
-                    productPrice += item.Price;
-                }
+                decimal productPrice = productDb.Price + orderBL.GetAdditionalComponentsPrice(additionalComponent);
 
                 basketVM.Products.Add(new BasketViewModel.Product(
-                    productDb.ProductName, productDb.Components, string.Join(", ", additionalComponentName.ToArray()), productDb.Size, productDb.Weight, productPrice));
+                    productDb.ProductName, productDb.Components, orderBL.GetAdditionalComponentsName(additionalComponent), productDb.Size, productDb.Weight, productPrice));
             }
 
             basketVM.OrderPrice = basketVM.Products.Sum(x => x.ProductPrice);
@@ -109,5 +110,118 @@ namespace Pizzeria.Controllers
 
             return RedirectToAction("Basket");
         }
+
+        public async Task<IActionResult> DeliveryForm()
+        {
+            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>>>>(HttpContext.Session, "Basket");
+            if (basket == null || basket.Count() == 0)
+            {
+                return View("EmptyBasket");
+            }
+
+            DeliveryFormViewModel deliveryFormVM = new DeliveryFormViewModel();
+            deliveryFormVM.City = "Warszawa";
+
+            if (User.IsInRole("Employee") || User.IsInRole("Admin"))
+            {
+                return View("DeliveryFormForStaff", deliveryFormVM);
+            }
+            
+            if (User.IsInRole("Member"))
+            {
+                deliveryFormVM.DisplayForMember = "none";
+
+                var user = await GetCurrentUserAsync();
+
+                deliveryFormVM.ClientName = user.UserName;
+                deliveryFormVM.Email = user.Email;
+                //deliveryFormVM.Phone = Int32.Parse(user.PhoneNumber);
+
+                var lastOrder = _context.Order.LastOrDefault(x => x.UserEmail.Equals(user.Email));
+                if (lastOrder != null)
+                {
+                    deliveryFormVM.City = lastOrder.City;
+                    deliveryFormVM.Street = lastOrder.Street;
+                    deliveryFormVM.HouseNumber = lastOrder.HouseNumber;
+                    deliveryFormVM.FlatNumber = lastOrder.FlatNumber;
+                    deliveryFormVM.Phone = lastOrder.Phone;
+                }
+            }
+
+            return View(deliveryFormVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeliveryForm([Bind("City, Street, HouseNumber, FlatNumber, ClientName, Email, Phone, DisplayForMember")] DeliveryFormViewModel deliveryFormVM)
+        {
+            if (User.Identity.IsAuthenticated == false && String.IsNullOrEmpty(deliveryFormVM.Email))
+            {
+                ModelState.AddModelError("Email", "Adres email jest wymagany");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>>>>(HttpContext.Session, "Basket");
+                if (basket == null || basket.Count() == 0)
+                {
+                    return View("EmptyBasket");
+                }
+
+                OrderBusinessLayer orderBL = new OrderBusinessLayer();
+                List<OrderedProduct> orderedProductList = orderBL.GetOrderedProductList(basket, _context);
+                
+                //Create order
+                Order order = new Order();
+                var user = await GetCurrentUserAsync();
+
+                if (User.IsInRole("Member"))
+                    order.ClientName = user.UserName;
+                else
+                    order.ClientName = deliveryFormVM.ClientName;
+
+                if (User.Identity.IsAuthenticated)
+                    order.UserEmail = user.Email;
+                else
+                    order.UserEmail = deliveryFormVM.Email;
+
+                order.Phone = deliveryFormVM.Phone;
+                order.Date = DateTime.Now;
+                order.Value = orderedProductList.Sum(x => x.Value);
+                order.City = deliveryFormVM.City;
+                order.Street = deliveryFormVM.Street;
+                order.HouseNumber = deliveryFormVM.HouseNumber;
+                order.FlatNumber = deliveryFormVM.FlatNumber;
+
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+
+                int orderId = order.ID;
+
+                for (int i = 0; i < orderedProductList.Count(); i++)
+                {
+                    orderedProductList[i].OrderId = orderId;
+                    _context.Add(orderedProductList[i]);
+                }
+                await _context.SaveChangesAsync();
+
+                HttpContext.Session.Remove("Basket");
+
+                //Return specific View
+                if (User.IsInRole("Employee") || User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Orders");
+                }
+                return View("OrderSuccess");
+            }
+            else if(User.IsInRole("Employee") || User.IsInRole("Admin"))
+            {
+                return View("DeliveryFormForStaff", deliveryFormVM);
+            }
+            
+            return View(deliveryFormVM);
+        }
+
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }
