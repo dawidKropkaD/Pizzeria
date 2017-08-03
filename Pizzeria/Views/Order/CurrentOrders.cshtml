@@ -1,0 +1,38 @@
+﻿@model List<Pizzeria.ViewModels.CurrentOrderViewModel>
+
+@{
+    ViewData["Title"] = "Bieżące zamówienia";
+}
+
+<h2>Bieżące zamówienia</h2>
+<hr />
+
+<div id="orders">
+    @Html.Partial("_CurrentOrdersPartial", Model)
+</div>
+
+
+
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+<script type="text/javascript">
+    setInterval("getData()", 5000);
+    function getData() {
+        var selectedOrders = [];
+        $('.completed:checked').each(function () {
+            selectedOrders.push($(this).attr('name'));
+        });
+
+        $.ajax({
+            type: "POST",
+            data: { values: selectedOrders },
+            url: '@Url.Action("OrderCompleted", "Order")',
+            dataType: 'html',
+            success: function (data) {
+                $('#orders').html(data);
+            }
+        });
+    }
+</script>

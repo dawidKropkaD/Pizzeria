@@ -11,6 +11,9 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using Pizzeria.Models.Tables;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Pizzeria.Controllers
 {
@@ -209,7 +212,7 @@ namespace Pizzeria.Controllers
                 //Return specific View
                 if (User.IsInRole("Employee") || User.IsInRole("Admin"))
                 {
-                    return RedirectToAction("Orders");
+                    return RedirectToAction("CurrentOrders");
                 }
                 return View("OrderSuccess");
             }
@@ -219,6 +222,83 @@ namespace Pizzeria.Controllers
             }
             
             return View(deliveryFormVM);
+        }
+
+
+        [Authorize(Roles = "Admin, Employee")]
+        public IActionResult CurrentOrders()
+        {
+            List<CurrentOrderViewModel> currentOrderVMList = new List<CurrentOrderViewModel>();
+            List<Order> currentOrderList = _context.Order.Where(x => x.Completed == false).ToList();
+
+            foreach (var item in currentOrderList)
+            {
+                CurrentOrderViewModel currentOrderVM = new CurrentOrderViewModel(item);
+                
+                var orderedProductList = _context.OrderedProduct
+                    .Where(x => x.OrderId == item.ID)
+                    .Select(i => new { i.ProductId, i.AdditionalComponents, i.Value })
+                    .ToList();
+
+                foreach (var orderedProduct in orderedProductList)
+                {
+                    BasketViewModel.Product product = new BasketViewModel.Product();
+                    var productDb = _context.ProductDb
+                        .Where(x => x.ID == orderedProduct.ProductId)
+                        .Select(i => new { i.ProductName, i.Size })
+                        .First();
+
+                    product.ProductName = productDb.ProductName;
+                    product.Size = productDb.Size;
+                    product.AdditionalComponents = orderedProduct.AdditionalComponents;
+                    product.ProductPrice = orderedProduct.Value;
+
+                    currentOrderVM.ProductList.Add(product);
+                }
+
+                if (currentOrderVMList.Count() % 2 == 0)
+                    currentOrderVM.BackgroundColor = "lightblue";
+                else
+                    currentOrderVM.BackgroundColor = "lightcyan";
+
+                currentOrderVMList.Add(currentOrderVM);
+            }
+
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            if (isAjax)
+            {
+                return PartialView("_CurrentOrdersPartial", currentOrderVMList);
+            }
+            else
+            {
+                return View(currentOrderVMList);
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult OrderCompleted(string[] values)
+        {
+            if (values != null && values.Length != 0)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    Order order = _context.Order.SingleOrDefault(x => x.ID == Int32.Parse(values[i]));
+                    order.Completed = true;
+
+                    try
+                    {
+                        _context.Update(order);
+                        _context.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return RedirectToAction("CurrentOrders");
         }
 
 

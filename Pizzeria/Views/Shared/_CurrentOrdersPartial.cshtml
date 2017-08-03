@@ -1,0 +1,94 @@
+﻿@model List<Pizzeria.ViewModels.CurrentOrderViewModel>
+
+@for (int i = Model.Count - 1; i >= 0; i--)
+{
+    <div style="background-color:@Model[i].BackgroundColor">
+        <table style="display:inline">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(x => Model[0].Completed)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:center"><input type="checkbox" class="completed" name="@Model[i].ID" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display:inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+        <table style="display:inline">
+            <tr>
+                <td><strong>@Html.DisplayNameFor(model => model[0].ClientName):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model[i].ClientName)</td>
+            </tr>
+            <tr>
+                <td><strong>@Html.DisplayNameFor(model => model[0].Phone):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model[i].Phone)</td>
+            </tr>
+            <tr>
+                <td><strong>Adres:&nbsp;</strong></td>
+                <td>
+                    @Html.DisplayFor(model => model[i].City),
+                    @Html.DisplayFor(x => x[i].Street)
+                    @Html.DisplayFor(x => x[i].HouseNumber)
+                    @if (!String.IsNullOrEmpty(Model[i].FlatNumber))
+                {
+                        <span>/</span>
+                    }
+                    @Html.DisplayFor(x => x[i].FlatNumber)
+                </td>
+            </tr>
+            <tr>
+                <td><strong>@Html.DisplayNameFor(model => model[0].Value):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model[i].Value)</td>
+            </tr>
+        </table>
+
+        <div style="display:inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+        <table class="table" style="display:inline">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(x => x[0].ProductList[0].ProductName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(x => x[0].ProductList[0].Size)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(x => x[0].ProductList[0].ProductPrice)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < Model[i].ProductList.Count(); j++)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(x => x[i].ProductList[j].ProductName)
+                            @if (!string.IsNullOrEmpty(Model[i].ProductList[j].AdditionalComponents))
+                            {
+                                <br />
+                                <small>
+                                    @Html.DisplayNameFor(x => x[i].ProductList[0].AdditionalComponents)<span>: </span>
+                                    @Html.DisplayFor(x => Model[i].ProductList[j].AdditionalComponents)
+                                </small>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(x => x[i].ProductList[j].Size)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(x => x[i].ProductList[j].ProductPrice)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <hr />
+    <br />
+}

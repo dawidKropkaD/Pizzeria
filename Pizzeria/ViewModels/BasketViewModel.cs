@@ -1,6 +1,7 @@
 ﻿using Pizzeria.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +21,18 @@ namespace Pizzeria.ViewModels
 
         public class Product
         {
+            [Display(Name = "Produkt")]
             public string ProductName { get; set; }
             public string ProductComponents { get; set; }
+
+            [Display(Name = "Dodatkowe składniki")]
             public string AdditionalComponents { get; set; }
+
+            [Display(Name = "Rozmiar")]
             public double? Size { get; set; }
             public double? Weight { get; set; }
+
+            [Display(Name = "Cena")]
             public decimal ProductPrice { get; set; }
 
 
