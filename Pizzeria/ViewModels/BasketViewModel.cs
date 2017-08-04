@@ -29,10 +29,12 @@ namespace Pizzeria.ViewModels
             public string AdditionalComponents { get; set; }
 
             [Display(Name = "Rozmiar")]
+            [DisplayFormat(DataFormatString = "{0:###.##}cm")]
             public double? Size { get; set; }
             public double? Weight { get; set; }
 
             [Display(Name = "Cena")]
+            [DisplayFormat(DataFormatString = "{0:n2} zł")]
             public decimal ProductPrice { get; set; }
 
 

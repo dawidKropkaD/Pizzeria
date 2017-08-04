@@ -1,0 +1,44 @@
+﻿@model List<Pizzeria.ViewModels.MyOrderViewModel>
+
+@{
+    ViewData["Title"] = "Moje zamówienia";
+    @Html.Partial("_UserMenuPartial")
+}
+
+<h2>Moje zamówienia</h2>
+
+<table class="table table-striped">
+    <thead >
+        <tr class="bg-primary">
+            <th>@Html.DisplayNameFor(x => x[0].Value)</th>
+            <th>@Html.DisplayNameFor(x => x[0].OrderDate)</th>
+            <th>@Html.DisplayNameFor(x => x[0].ProductList)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>@Html.DisplayFor(x => x[i].Value)</td>
+                <td>@Html.DisplayFor(x => x[i].OrderDate)</td>
+                <td>
+                    <table class="table-condensed">
+                        <tbody>
+                            @for (int j = 0; j < Model[i].ProductList.Count(); j++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(x => x[i].ProductList[j].ProductName)
+                                        @Html.Partial("_DisplayAdditionalComponentsPartial", Model[i].ProductList[j].AdditionalComponents)
+                                    </td>
+                                    <td style="vertical-align:top">@Html.DisplayFor(x => x[i].ProductList[j].Size)</td>
+                                    <td style="vertical-align:top">@Html.DisplayFor(x => x[i].ProductList[j].ProductPrice)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

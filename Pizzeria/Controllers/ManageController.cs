@@ -10,6 +10,9 @@ using Microsoft.Extensions.Options;
 using Pizzeria.Models;
 using Pizzeria.Models.ManageViewModels;
 using Pizzeria.Services;
+using Pizzeria.ViewModels;
+using Pizzeria.Data;
+using Pizzeria.Models.Tables;
 
 namespace Pizzeria.Controllers
 {
@@ -22,6 +25,7 @@ namespace Pizzeria.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly ApplicationDbContext _context;
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
@@ -29,7 +33,8 @@ namespace Pizzeria.Controllers
           IOptions<IdentityCookieOptions> identityCookieOptions,
           IEmailSender emailSender,
           ISmsSender smsSender,
-          ILoggerFactory loggerFactory)
+          ILoggerFactory loggerFactory,
+          ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,6 +42,7 @@ namespace Pizzeria.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
+            _context = context;
         }
 
         //
@@ -67,6 +73,56 @@ namespace Pizzeria.Controllers
                 BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
             };
             return View(model);
+        }
+                
+        public async Task<IActionResult> MyOrders()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            List<MyOrderViewModel> myOrderVMList = new List<MyOrderViewModel>();
+            var myOrderDbList = _context.Order
+                .Where(x => x.UserEmail.Equals(user.Email))
+                .Select(x => new { x.ID, x.Value, x.Date })
+                .ToList();
+
+            if(myOrderDbList==null || myOrderDbList.Count() == 0)
+            {
+                return View("NoOrders");
+            }
+
+            for (int i = 0; i < myOrderDbList.Count(); i++)
+            {
+                MyOrderViewModel myOrderVM = new MyOrderViewModel();
+                var orderedProductList = _context.OrderedProduct
+                    .Where(x => x.OrderId == myOrderDbList[i].ID)
+                    .Select(x => new { x.ProductId, x.AdditionalComponents, x.Value })
+                    .ToList();
+
+                for (int j = 0; j < orderedProductList.Count(); j++)
+                {
+                    var productDb = _context.ProductDb
+                        .Where(x => x.ID == orderedProductList[j].ProductId)
+                        .Select(x => new { x.ProductName, x.Components, x.Size, x.Weight, x.Price })
+                        .Single();
+
+                    BasketViewModel.Product product = new BasketViewModel.Product(
+                        productDb.ProductName,
+                        productDb.Components,
+                        orderedProductList[j].AdditionalComponents,
+                        productDb.Size,
+                        productDb.Weight,
+                        orderedProductList[j].Value
+                    );
+
+                    myOrderVM.ProductList.Add(product);
+                }
+                
+                myOrderVM.Value = myOrderDbList[i].Value;
+                myOrderVM.OrderDate = myOrderDbList[i].Date;
+                myOrderVMList.Add(myOrderVM);
+            }
+
+            return View(myOrderVMList);
         }
 
         //
