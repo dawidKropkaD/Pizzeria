@@ -48,3 +48,43 @@ textarea {
         display: none;
     }
 }
+
+/* SECOND MENU
+    source: https://forums.asp.net/t/1618154.aspx?Dynamic+two+level+deep+horizontal+menu 
+*/
+.menuWrap {
+    position: relative;
+}
+
+ul.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 20px;
+}
+
+ul.menu li {
+    float: left;
+}
+
+ul.menu li a {
+    display: inline-block;
+}
+
+ul.menu li ul {
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+}
+
+ul.menu li:hover ul {
+    display: block;
+}
+li.link {
+    margin: 0 10px 0 0;
+}
