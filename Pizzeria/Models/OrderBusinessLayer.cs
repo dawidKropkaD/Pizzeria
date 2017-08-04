@@ -41,13 +41,19 @@ namespace Pizzeria.Models
             for (int i = 0; i < basket.Count(); i++)
             {
                 OrderedProduct orderedProduct = new OrderedProduct();
+                var productDb = _context.ProductDb
+                    .Where(x => x.ID == basket[i].Item1)
+                    .Select(x => new { x.ProductName, x.Components, x.Size, x.Weight, x.Price })
+                    .SingleOrDefault();
                 List<AdditionalComponent> additionalComponentList = _context.AdditionaComponent.Where(x => basket[i].Item2.Contains(x.ID)).ToList();
-                decimal baseProductPrice = _context.ProductDb.SingleOrDefault(x => x.ID == basket[i].Item1).Price;
                 decimal additionalComponentsPrice = additionalComponentList.Sum(x => x.Price);
-
-                orderedProduct.ProductId = basket[i].Item1;
+                
+                orderedProduct.Name = productDb.ProductName;
+                orderedProduct.Components = productDb.Components;
                 orderedProduct.AdditionalComponents = GetAdditionalComponentsName(additionalComponentList);
-                orderedProduct.Value = baseProductPrice + additionalComponentsPrice;
+                orderedProduct.Size = productDb.Size;
+                orderedProduct.Weight = productDb.Weight;
+                orderedProduct.Value = productDb.Price + additionalComponentsPrice;
 
                 orderedProductList.Add(orderedProduct);
             }

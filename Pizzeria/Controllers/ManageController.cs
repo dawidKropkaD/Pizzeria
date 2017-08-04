@@ -95,22 +95,17 @@ namespace Pizzeria.Controllers
                 MyOrderViewModel myOrderVM = new MyOrderViewModel();
                 var orderedProductList = _context.OrderedProduct
                     .Where(x => x.OrderId == myOrderDbList[i].ID)
-                    .Select(x => new { x.ProductId, x.AdditionalComponents, x.Value })
+                    .Select(x => new { x.Name, x.Components, x.AdditionalComponents, x.Size, x.Weight, x.Value })
                     .ToList();
 
                 for (int j = 0; j < orderedProductList.Count(); j++)
                 {
-                    var productDb = _context.ProductDb
-                        .Where(x => x.ID == orderedProductList[j].ProductId)
-                        .Select(x => new { x.ProductName, x.Components, x.Size, x.Weight, x.Price })
-                        .Single();
-
                     BasketViewModel.Product product = new BasketViewModel.Product(
-                        productDb.ProductName,
-                        productDb.Components,
+                        orderedProductList[j].Name,
+                        orderedProductList[j].Components,
                         orderedProductList[j].AdditionalComponents,
-                        productDb.Size,
-                        productDb.Weight,
+                        orderedProductList[j].Size,
+                        orderedProductList[j].Weight,
                         orderedProductList[j].Value
                     );
 

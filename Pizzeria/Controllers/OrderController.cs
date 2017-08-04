@@ -237,19 +237,15 @@ namespace Pizzeria.Controllers
                 
                 var orderedProductList = _context.OrderedProduct
                     .Where(x => x.OrderId == item.ID)
-                    .Select(i => new { i.ProductId, i.AdditionalComponents, i.Value })
+                    .Select(i => new { i.Name, i.AdditionalComponents, i.Size, i.Value })
                     .ToList();
 
                 foreach (var orderedProduct in orderedProductList)
                 {
                     BasketViewModel.Product product = new BasketViewModel.Product();
-                    var productDb = _context.ProductDb
-                        .Where(x => x.ID == orderedProduct.ProductId)
-                        .Select(i => new { i.ProductName, i.Size })
-                        .First();
 
-                    product.ProductName = productDb.ProductName;
-                    product.Size = productDb.Size;
+                    product.ProductName = orderedProduct.Name;
+                    product.Size = orderedProduct.Size;
                     product.AdditionalComponents = orderedProduct.AdditionalComponents;
                     product.ProductPrice = orderedProduct.Value;
 

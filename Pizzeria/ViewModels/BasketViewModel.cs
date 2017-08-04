@@ -23,6 +23,7 @@ namespace Pizzeria.ViewModels
         {
             [Display(Name = "Produkt")]
             public string ProductName { get; set; }
+
             public string ProductComponents { get; set; }
 
             [Display(Name = "Dodatkowe składniki")]
@@ -31,6 +32,7 @@ namespace Pizzeria.ViewModels
             [Display(Name = "Rozmiar")]
             [DisplayFormat(DataFormatString = "{0:###.##}cm")]
             public double? Size { get; set; }
+
             public double? Weight { get; set; }
 
             [Display(Name = "Cena")]
