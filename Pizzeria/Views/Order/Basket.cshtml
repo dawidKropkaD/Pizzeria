@@ -29,18 +29,8 @@
                     <strong>
                         @Html.DisplayFor(modelItem => Model.Products[i].ProductName)
                     </strong>
-                    <p class="small">
-                        @Html.DisplayFor(modelItem => Model.Products[i].ProductComponents)<br />
-                        @if (!string.IsNullOrEmpty(Model.Products[i].AdditionalComponents))
-                        {
-                            @Html.DisplayNameFor(model => model.Products[0].AdditionalComponents)<span>: </span>
-                            @Html.DisplayFor(modelItem => Model.Products[i].AdditionalComponents)
-                        }
-                        @if (Model.Products[i].Weight != null)
-                        {
-                            @Html.DisplayFor(modelItem => Model.Products[i].Weight)<span>g</span>
-                        }
-                    </p>
+                    @Html.Partial("_ProductDetailsPartial", new Pizzeria.ViewModels.ProductDetailsViewModel(
+                        Model.Products[i].Components, Model.Products[i].AdditionalComponents, Model.Products[i].Weight))
                 </td>
                 <td>
                     @if (Model.Products[i].Size != null)

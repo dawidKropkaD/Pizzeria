@@ -1,0 +1,23 @@
+﻿@model Pizzeria.ViewModels.ProductDetailsViewModel
+
+@if (!String.IsNullOrEmpty(Model.Components))
+{
+    <br />
+    <span class="small">
+        @Html.DisplayNameFor(x => x.Components): @Html.DisplayFor(x => x.Components)
+    </span>
+}
+@if (!String.IsNullOrEmpty(Model.AdditionalComponents))
+{
+    <br />
+    <span class="small">
+        @Html.DisplayNameFor(x => x.AdditionalComponents): @Html.DisplayFor(x => x.AdditionalComponents)
+    </span>
+}
+@if (Model.Weight != null)
+{
+    <br />
+    <span class="small">
+        @Html.DisplayFor(x => x.Weight)
+    </span>
+ }

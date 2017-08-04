@@ -9,7 +9,7 @@ namespace Pizzeria.ViewModels
     public class MyOrderViewModel
     {
         [Display(Name = "Zamówienie")]
-        public List<BasketViewModel.Product> ProductList { get; set; }
+        public List<ProductViewModel> ProductList { get; set; }
 
         [Display(Name = "Wartość")]
         [DisplayFormat(DataFormatString = "{0:n2} zł")]
@@ -21,7 +21,7 @@ namespace Pizzeria.ViewModels
 
         public MyOrderViewModel()
         {
-            ProductList = new List<BasketViewModel.Product>();
+            ProductList = new List<ProductViewModel>();
         }
     }
 }

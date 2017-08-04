@@ -1,0 +1,35 @@
+﻿@model List<Pizzeria.ViewModels.ProductViewModel>
+
+<table class="table" style="display:inline">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(x => x[0].ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x[0].Size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(x => x[0].ProductPrice)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(x => x[i].ProductName)
+                    @Html.Partial("_ProductDetailsPartial", new Pizzeria.ViewModels.ProductDetailsViewModel(
+                        Model[i].Components, Model[i].AdditionalComponents, Model[i].Weight))
+                </td>
+                <td>
+                    @Html.DisplayFor(x => x[i].Size)
+                </td>
+                <td>
+                    @Html.DisplayFor(x => x[i].ProductPrice)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

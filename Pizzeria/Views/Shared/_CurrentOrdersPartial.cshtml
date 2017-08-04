@@ -48,45 +48,8 @@
 
         <div style="display:inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 
-        <table class="table" style="display:inline">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(x => x[0].ProductList[0].ProductName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(x => x[0].ProductList[0].Size)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(x => x[0].ProductList[0].ProductPrice)
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int j = 0; j < Model[i].ProductList.Count(); j++)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(x => x[i].ProductList[j].ProductName)
-                            @if (!string.IsNullOrEmpty(Model[i].ProductList[j].AdditionalComponents))
-                            {
-                                <br />
-                                <small>
-                                    @Html.DisplayNameFor(x => x[i].ProductList[0].AdditionalComponents)<span>: </span>
-                                    @Html.DisplayFor(x => Model[i].ProductList[j].AdditionalComponents)
-                                </small>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(x => x[i].ProductList[j].Size)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(x => x[i].ProductList[j].ProductPrice)
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+            @Html.Partial("_ProductsListPartial", Model[i].ProductList)
     </div>
 
     <hr />

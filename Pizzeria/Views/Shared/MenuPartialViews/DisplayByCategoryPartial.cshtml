@@ -48,13 +48,8 @@ else
                     <strong>
                         @Html.DisplayFor(modelItem => item.ProductName)
                     </strong>
-                    <p class="small">
-                        @Html.DisplayFor(modelItem => item.Components)
-                        @if (item.Weight != null)
-                        {
-                            @Html.DisplayFor(modelItem => item.Weight)<span>g</span>
-                        }
-                    </p>
+                    @Html.Partial("_ProductDetailsPartial", new Pizzeria.ViewModels.ProductDetailsViewModel(
+                        item.Components, null, item.Weight))
                 </td>
                 @foreach (var price in item.Price)
                 {

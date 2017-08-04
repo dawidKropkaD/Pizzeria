@@ -74,51 +74,7 @@ namespace Pizzeria.Controllers
             };
             return View(model);
         }
-                
-        public async Task<IActionResult> MyOrders()
-        {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            List<MyOrderViewModel> myOrderVMList = new List<MyOrderViewModel>();
-            var myOrderDbList = _context.Order
-                .Where(x => x.UserEmail.Equals(user.Email))
-                .Select(x => new { x.ID, x.Value, x.Date })
-                .ToList();
-
-            if(myOrderDbList==null || myOrderDbList.Count() == 0)
-            {
-                return View("NoOrders");
-            }
-
-            for (int i = 0; i < myOrderDbList.Count(); i++)
-            {
-                MyOrderViewModel myOrderVM = new MyOrderViewModel();
-                var orderedProductList = _context.OrderedProduct
-                    .Where(x => x.OrderId == myOrderDbList[i].ID)
-                    .Select(x => new { x.Name, x.Components, x.AdditionalComponents, x.Size, x.Weight, x.Value })
-                    .ToList();
-
-                for (int j = 0; j < orderedProductList.Count(); j++)
-                {
-                    BasketViewModel.Product product = new BasketViewModel.Product(
-                        orderedProductList[j].Name,
-                        orderedProductList[j].Components,
-                        orderedProductList[j].AdditionalComponents,
-                        orderedProductList[j].Size,
-                        orderedProductList[j].Weight,
-                        orderedProductList[j].Value
-                    );
-
-                    myOrderVM.ProductList.Add(product);
-                }
-                
-                myOrderVM.Value = myOrderDbList[i].Value;
-                myOrderVM.OrderDate = myOrderDbList[i].Date;
-                myOrderVMList.Add(myOrderVM);
-            }
-
-            return View(myOrderVMList);
-        }
+               
 
         //
         // POST: /Manage/RemoveLogin

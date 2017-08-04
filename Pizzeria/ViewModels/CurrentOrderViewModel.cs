@@ -8,18 +8,18 @@ namespace Pizzeria.ViewModels
 {
     public class CurrentOrderViewModel : Order
     {
-        public List<BasketViewModel.Product> ProductList { get; set; }
+        public List<ProductViewModel> ProductList { get; set; }
         public string BackgroundColor { get; set; }
 
 
         public CurrentOrderViewModel()
         {
-            ProductList = new List<BasketViewModel.Product>();
+            ProductList = new List<ProductViewModel>();
         }
 
         public CurrentOrderViewModel(Order o)
         {
-            ProductList = new List<BasketViewModel.Product>();
+            ProductList = new List<ProductViewModel>();
 
             ID = o.ID;
             ClientName = o.ClientName;
