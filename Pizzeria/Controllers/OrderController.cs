@@ -140,20 +140,15 @@ namespace Pizzeria.Controllers
                 deliveryFormVM.DisplayForMember = "none";
 
                 var user = await GetCurrentUserAsync();
+                UserDb userDb = _context.UserDb.Single(x => x.AspNetUserId.Equals(user.Id));
 
                 deliveryFormVM.ClientName = user.UserName;
                 deliveryFormVM.Email = user.Email;
-                //deliveryFormVM.Phone = Int32.Parse(user.PhoneNumber);
-
-                var lastOrder = _context.Order.LastOrDefault(x => x.UserEmail.Equals(user.Email));
-                if (lastOrder != null)
-                {
-                    deliveryFormVM.City = lastOrder.City;
-                    deliveryFormVM.Street = lastOrder.Street;
-                    deliveryFormVM.HouseNumber = lastOrder.HouseNumber;
-                    deliveryFormVM.FlatNumber = lastOrder.FlatNumber;
-                    deliveryFormVM.Phone = lastOrder.Phone;
-                }
+                deliveryFormVM.Phone = Int32.Parse(user.PhoneNumber);
+                deliveryFormVM.City = userDb.City;
+                deliveryFormVM.Street = userDb.Street;
+                deliveryFormVM.HouseNumber = userDb.HouseNumber;
+                deliveryFormVM.FlatNumber = userDb.FlatNumber;
             }
 
             return View(deliveryFormVM);
