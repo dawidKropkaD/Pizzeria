@@ -74,7 +74,25 @@ namespace Pizzeria.Controllers
             };
             return View(model);
         }
-               
+
+
+        /// <returns>Item1: loyalty points, item2: moneyPrize</returns>
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> LoyaltyPoints()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            string userId = user.Id;
+            var userDb = _context.UserDb
+                .Where(x => x.AspNetUserId.Equals(userId))
+                .Select(x => new { x.LoyaltyPoints, x.MoneyPrize })
+                .Single();
+            LoyaltyPointsViewModel loyaltyPointsVm = new LoyaltyPointsViewModel();
+            loyaltyPointsVm.LoyaltyPoints = userDb.LoyaltyPoints;
+            loyaltyPointsVm.MoneyPrize = userDb.MoneyPrize;
+
+            return View(loyaltyPointsVm);
+        }
+
 
         //
         // POST: /Manage/RemoveLogin

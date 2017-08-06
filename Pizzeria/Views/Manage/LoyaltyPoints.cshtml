@@ -1,0 +1,15 @@
+﻿@model Pizzeria.ViewModels.LoyaltyPointsViewModel
+
+@{
+    ViewData["Title"] = "Punkty lojalnościowe";
+    @Html.Partial("_UserMenuPartial")
+}
+
+<h2>Punkty lojalnościowe</h2>
+<hr />
+<p>
+    @Html.DisplayNameFor(x => x.LoyaltyPoints): @Html.DisplayFor(x => x.LoyaltyPoints).
+</p>
+<p>
+    @Html.DisplayNameFor(x => x.MoneyPrize): @Html.DisplayFor(x => x.MoneyPrize).
+</p>

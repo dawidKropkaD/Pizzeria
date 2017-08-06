@@ -101,7 +101,12 @@ namespace Pizzeria.Controllers
                     productDb.ProductName, productDb.Components, orderBL.GetAdditionalComponentsName(additionalComponent), productDb.Size, productDb.Weight, productPrice));
             }
 
-            basketVM.OrderPrice = basketVM.Products.Sum(x => x.ProductPrice);
+            basketVM.OrderPrice = orderBL.GetOrderValue(
+                basketVM.Products.Select(x => x.ProductPrice).Sum(),
+                User.IsInRole("Member"),
+                _userManager.GetUserId(User),
+                _context
+            );
 
             return View(basketVM);
         }
@@ -189,7 +194,8 @@ namespace Pizzeria.Controllers
 
                 order.Phone = deliveryFormVM.Phone;
                 order.Date = DateTime.Now;
-                order.Value = orderedProductList.Sum(x => x.Value);
+                order.Value = orderBL.GetOrderValue(orderedProductList.Sum(x => x.Value), User.IsInRole("Member"),
+                    _userManager.GetUserId(User), _context, true);
                 order.City = deliveryFormVM.City;
                 order.Street = deliveryFormVM.Street;
                 order.HouseNumber = deliveryFormVM.HouseNumber;
@@ -199,6 +205,8 @@ namespace Pizzeria.Controllers
                 await _context.SaveChangesAsync();
 
                 int orderId = order.ID;
+                int loyaltyPoints = (int)Math.Floor((double)order.Value / 20.00);
+                orderBL.AddLoyaltyPoints(loyaltyPoints, User.IsInRole("Member"), _userManager.GetUserId(User), _context);
 
                 for (int i = 0; i < orderedProductList.Count(); i++)
                 {

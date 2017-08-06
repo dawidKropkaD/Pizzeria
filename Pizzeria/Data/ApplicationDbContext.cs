@@ -20,6 +20,7 @@ namespace Pizzeria.Data
         public DbSet<AdditionalComponent> AdditionaComponent { get; set; }
         public DbSet<OrderedProduct> OrderedProduct { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<UserDb> UserDb { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

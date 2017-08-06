@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Pizzeria.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Pizzeria.ViewModels
 {
-    public class DeliveryFormViewModel
+    public class DeliveryFormViewModel : Address
     {
         [Required]
-        public string City { get; set; }
+        public override string City { get; set; }
 
         [Required]
-        public string Street { get; set; }
+        public override string Street { get; set; }
 
         [Required]
-        public string HouseNumber { get; set; }
+        public override string HouseNumber { get; set; }
 
-        public string FlatNumber { get; set; }
+        public override string FlatNumber { get; set; }
 
         [Required]
         public string ClientName { get; set; }

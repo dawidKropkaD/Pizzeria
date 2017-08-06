@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Pizzeria.Data;
 using Pizzeria.Models.Tables;
+using Pizzeria.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
+using Microsoft.Extensions.Configuration;
 
 namespace Pizzeria.Models
 {
@@ -59,6 +63,68 @@ namespace Pizzeria.Models
             }
 
             return orderedProductList;
+        }
+
+        /// <summary>
+        /// Get order value include money prize
+        /// </summary>
+        public decimal GetOrderValue(decimal baseOrderPrice, bool userIsMember, string userId, ApplicationDbContext _context, bool updateMoneyPrize = false)
+        {
+            if (!userIsMember)
+            {
+                return baseOrderPrice;
+            }
+
+            UserDb userDb = _context.UserDb.Where(x => x.AspNetUserId.Equals(userId)).Single();
+            decimal finalPrice;
+
+            if (baseOrderPrice >= userDb.MoneyPrize)
+            {
+                finalPrice = baseOrderPrice - userDb.MoneyPrize;
+                userDb.MoneyPrize = 0;
+            }
+            else
+            {
+                finalPrice = 0;
+                userDb.MoneyPrize -= baseOrderPrice;
+            }
+
+            if (updateMoneyPrize)
+            {
+                _context.Update(userDb);
+                _context.SaveChanges();
+            }
+            
+            return finalPrice;
+        }
+
+        public void AddLoyaltyPoints(int loyaltyPointsNumber, bool userIsMember, string userId, ApplicationDbContext _context)
+        {
+            
+            if (!userIsMember)
+            {
+                return;
+            }
+            int threshold = 100;
+            int loyaltyPointValue = 1;  //w złotówkach
+
+            UserDb userDb = _context.UserDb.Single(x => x.AspNetUserId.Equals(userId));
+
+            int currentLoayltyPoints = userDb.LoyaltyPoints + loyaltyPointsNumber;
+
+            if (currentLoayltyPoints >= threshold)
+            {
+                int quotient = (int)Math.Floor((1.0 * currentLoayltyPoints / threshold));
+                userDb.LoyaltyPoints = currentLoayltyPoints - quotient * threshold;
+                userDb.MoneyPrize += quotient * threshold * loyaltyPointValue;
+            }
+            else
+            {
+                userDb.LoyaltyPoints = currentLoayltyPoints;
+            }
+
+            _context.Update(userDb);
+            _context.SaveChanges();
         }
     }
 }
