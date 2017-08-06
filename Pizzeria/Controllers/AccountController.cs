@@ -12,6 +12,8 @@ using Microsoft.Extensions.Options;
 using Pizzeria.Models;
 using Pizzeria.Models.AccountViewModels;
 using Pizzeria.Services;
+using Pizzeria.Models.Tables;
+using Pizzeria.Data;
 
 namespace Pizzeria.Controllers
 {
@@ -24,6 +26,7 @@ namespace Pizzeria.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly string _externalCookieScheme;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -31,7 +34,8 @@ namespace Pizzeria.Controllers
             IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ApplicationDbContext contex)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -39,6 +43,7 @@ namespace Pizzeria.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _context = contex;
         }
 
         //
@@ -107,15 +112,27 @@ namespace Pizzeria.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null, string userRole = "Member")
         {
             ViewData["ReturnUrl"] = returnUrl;
+
+            if (EmailExist(model.Email))
+            {
+                ModelState.AddModelError("Email", "Podany email jest zajęty");
+            }
+
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, PhoneNumber = model.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, userRole);
+
+                    UserDb userDb = new UserDb { AspNetUserId = user.Id, LoyaltyPoints = 0, MoneyPrize = 0, City = model.City,
+                        Street = model.Street, HouseNumber = model.HouseNumber, FlatNumber = model.FlatNumber };
+                    _context.Add(userDb);
+                    _context.SaveChanges();
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -471,6 +488,16 @@ namespace Pizzeria.Controllers
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
+        }
+
+        private bool EmailExist(string userEmail)
+        {
+            if(_context.Users.Any(x => x.Email.Equals(userEmail, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
