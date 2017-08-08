@@ -14,6 +14,7 @@ namespace Pizzeria.Models.Tables
         public string AdditionalComponents { get; set; }
         public double? Size { get; set; }
         public double? Weight { get; set; }
-        public decimal Value { get; set; }
+        public decimal FinalValue { get; set; }
+        public int Quantity { get; set; }
     }
 }

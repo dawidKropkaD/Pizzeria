@@ -15,23 +15,27 @@ namespace Pizzeria.ViewModels
         [DisplayFormat(DataFormatString = "{0:###.##}cm")]
         public double? Size { get; set; }
 
-        [Display(Name = "Cena")]
+        [Display(Name = "Wartość")]
         [DisplayFormat(DataFormatString = "{0:n2} zł")]
-        public decimal ProductPrice { get; set; }
+        public decimal FinalValue { get; set; }
+
+        [Display(Name = "Ilość")]
+        public int Quantity { get; set; }
 
 
         public ProductViewModel()
         {
         }
 
-        public ProductViewModel(string name, string components, string additionalComponents, double? size, double? weight, decimal price)
+        public ProductViewModel(string name, string components, string additionalComponents, double? size, double? weight, decimal value, int quantity)
         {
             ProductName = name;
             Components = components;
             AdditionalComponents = additionalComponents;
             Size = size;
             Weight = weight;
-            ProductPrice = price;
+            FinalValue = value;
+            Quantity = quantity;
         }
     }
 }

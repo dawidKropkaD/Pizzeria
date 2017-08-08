@@ -38,7 +38,7 @@ namespace Pizzeria.Models
             return price;
         }
 
-        public List<OrderedProduct> GetOrderedProductList(List<Tuple<int, List<int>>> basket, ApplicationDbContext _context)
+        public List<OrderedProduct> GetOrderedProductList(List<Tuple<int, List<int>, int>> basket, ApplicationDbContext _context)
         {
             List<OrderedProduct> orderedProductList = new List<OrderedProduct>();
 
@@ -51,14 +51,15 @@ namespace Pizzeria.Models
                     .SingleOrDefault();
                 List<AdditionalComponent> additionalComponentList = _context.AdditionaComponent.Where(x => basket[i].Item2.Contains(x.ID)).ToList();
                 decimal additionalComponentsPrice = additionalComponentList.Sum(x => x.Price);
-                
+
+                orderedProduct.Quantity = basket[i].Item3;
                 orderedProduct.Name = productDb.ProductName;
                 orderedProduct.Components = productDb.Components;
                 orderedProduct.AdditionalComponents = GetAdditionalComponentsName(additionalComponentList);
                 orderedProduct.Size = productDb.Size;
                 orderedProduct.Weight = productDb.Weight;
-                orderedProduct.Value = productDb.Price + additionalComponentsPrice;
-
+                orderedProduct.FinalValue = (productDb.Price + additionalComponentsPrice) * orderedProduct.Quantity;
+                
                 orderedProductList.Add(orderedProduct);
             }
 
@@ -125,6 +126,49 @@ namespace Pizzeria.Models
 
             _context.Update(userDb);
             _context.SaveChanges();
+        }
+
+        public List<Tuple<int, List<int>, int>> MergeDuplicateProducts(List<Tuple<int, List<int>, int>> productList, Tuple<int, List<int>, int> newProduct)
+        {
+            for (int i = 0; i < productList.Count(); i++)
+            {
+                if (ProductsAreEquals(productList[i].Item1, productList[i].Item2, newProduct.Item1, newProduct.Item2))
+                {
+                    productList[i] = new Tuple<int, List<int>, int>(productList[i].Item1, productList[i].Item2, productList[i].Item3 + newProduct.Item3);
+
+                    return productList;
+                }
+            }
+
+            productList.Add(new Tuple<int, List<int>, int>(newProduct.Item1, newProduct.Item2, newProduct.Item3));
+
+            return productList;
+        }
+
+        public bool ProductsAreEquals(int productId1, List<int> additionalComponentsIds1, int productId2, List<int> additionalComponentsIds2)
+        {
+            if (productId1 != productId2)
+                return false;
+
+            if (additionalComponentsIds1 == null && additionalComponentsIds2 == null)
+                return true;
+
+            if (additionalComponentsIds1 == null || additionalComponentsIds2 == null)
+                return false;
+
+            if (additionalComponentsIds1.Count() != additionalComponentsIds2.Count())
+                return false;
+
+            additionalComponentsIds1.Sort();
+            additionalComponentsIds2.Sort();
+
+            for (int i = 0; i < additionalComponentsIds1.Count(); i++)
+            {
+                if (additionalComponentsIds1[i] != additionalComponentsIds2[i])
+                    return false;
+            }
+
+            return true;
         }
     }
 }

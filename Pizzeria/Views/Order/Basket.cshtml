@@ -16,7 +16,10 @@
                 Rodzaj
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].ProductPrice)
+                @Html.DisplayNameFor(model => model.Products[0].FinalValue)
+            </th>
+            <th>
+                Ilość
             </th>
             <th></th>
         </tr>
@@ -39,7 +42,16 @@
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.Products[i].ProductPrice)
+                    @Html.DisplayFor(modelItem => Model.Products[i].FinalValue)
+                </td>
+                <td style="max-width:50px">
+                    <form asp-action="EditProductInBasket">
+                        <input type="hidden" name="productIndex" value="@i" />
+                        <input name="quantityBtn" type="submit" class="btn-link" value="+" />
+                        <input id="quantityInput" type="text" class="form-control" 
+                                value="@Model.Products[i].Quantity" min="1" max="100" readonly="readonly" />
+                        <input name="quantityBtn" type="submit" class="btn-link" value="-" />
+                    </form>
                 </td>
                 <td>
                     <form asp-action="DeleteFromBasket">
@@ -55,3 +67,6 @@
     Wartość zamówienia: @Model.OrderPrice zł<br /><br />
     <a asp-action="DeliveryForm" class="btn btn-default">To wszystko, dostawa</a>
 </div>
+
+
+

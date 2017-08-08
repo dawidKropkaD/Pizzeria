@@ -88,3 +88,12 @@ ul.menu li:hover ul {
 li.link {
     margin: 0 10px 0 0;
 }
+
+
+/* 
+    Increment decrement button
+*/
+.center {
+    width: 150px;
+    margin: 40px auto;
+}

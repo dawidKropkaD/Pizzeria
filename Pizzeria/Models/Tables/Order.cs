@@ -17,13 +17,19 @@ namespace Pizzeria.Models.Tables
 
         [Display(Name = "Telefon")]
         public int Phone { get; set; }
+
         public DateTime Date { get; set; }
 
         [Display(Name = "Wartość zamówienia")]
+        [DisplayFormat(DataFormatString = "{0:n2} zł")]
         public decimal Value { get; set; }
+
         public string City { get; set; }
+
         public string Street { get; set; }
+
         public string HouseNumber { get; set; }
+
         public string FlatNumber { get; set; }
 
         [Display(Name = "Zrealizowane")]

@@ -70,14 +70,14 @@ namespace Pizzeria.Controllers
         [HttpPost]
         public IActionResult AddToBasket(int productId, List<int> additionaComponentsIDs)
         {
-            Models.SessionExtensions.Add(HttpContext.Session, "Basket", new Tuple<int, List<int>>(productId, additionaComponentsIDs));
+            Models.SessionExtensions.AddProduct(HttpContext.Session, "Basket", new Tuple<int, List<int>, int>(productId, additionaComponentsIDs, 1));
 
             return RedirectToAction("Basket");
         }
 
         public IActionResult Basket()
         {
-            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>>>>(HttpContext.Session, "Basket");
+            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket");
 
             if (basket == null || basket.Count() == 0)
             {
@@ -86,6 +86,7 @@ namespace Pizzeria.Controllers
 
             OrderBusinessLayer orderBL = new OrderBusinessLayer();
             BasketViewModel basketVM = new BasketViewModel();
+            decimal baseOrderPrice = 0;
 
             for (int i = 0; i < basket.Count(); i++)
             {
@@ -96,13 +97,16 @@ namespace Pizzeria.Controllers
                 var additionalComponent = _context.AdditionaComponent.Where(x => basket[i].Item2.Contains(x.ID)).ToList();
 
                 decimal productPrice = productDb.Price + orderBL.GetAdditionalComponentsPrice(additionalComponent);
+                decimal finalProductValue = productPrice * basket[i].Item3;
+                baseOrderPrice += finalProductValue;
 
-                basketVM.Products.Add(new ProductViewModel(
-                    productDb.ProductName, productDb.Components, orderBL.GetAdditionalComponentsName(additionalComponent), productDb.Size, productDb.Weight, productPrice));
+                basketVM.Products.Add(new ProductViewModel(productDb.ProductName, 
+                    productDb.Components, orderBL.GetAdditionalComponentsName(additionalComponent), productDb.Size,
+                    productDb.Weight, finalProductValue, basket[i].Item3));
             }
 
             basketVM.OrderPrice = orderBL.GetOrderValue(
-                basketVM.Products.Select(x => x.ProductPrice).Sum(),
+                baseOrderPrice,
                 User.IsInRole("Member"),
                 _userManager.GetUserId(User),
                 _context
@@ -121,7 +125,7 @@ namespace Pizzeria.Controllers
 
         public async Task<IActionResult> DeliveryForm()
         {
-            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>>>>(HttpContext.Session, "Basket");
+            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket");
             if (basket == null || basket.Count() == 0)
             {
                 return View("EmptyBasket");
@@ -164,7 +168,7 @@ namespace Pizzeria.Controllers
 
             if (ModelState.IsValid)
             {
-                var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>>>>(HttpContext.Session, "Basket");
+                var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket");
                 if (basket == null || basket.Count() == 0)
                 {
                     return View("EmptyBasket");
@@ -189,7 +193,7 @@ namespace Pizzeria.Controllers
 
                 order.Phone = deliveryFormVM.Phone;
                 order.Date = DateTime.Now;
-                order.Value = orderBL.GetOrderValue(orderedProductList.Sum(x => x.Value), User.IsInRole("Member"),
+                order.Value = orderBL.GetOrderValue(orderedProductList.Sum(x => x.FinalValue), User.IsInRole("Member"),
                     _userManager.GetUserId(User), _context, true);
                 order.City = deliveryFormVM.City;
                 order.Street = deliveryFormVM.Street;
@@ -240,19 +244,20 @@ namespace Pizzeria.Controllers
                 
                 var orderedProductList = _context.OrderedProduct
                     .Where(x => x.OrderId == item.ID)
-                    .Select(i => new { i.Name, i.AdditionalComponents, i.Size, i.Value })
+                    .Select(i => new { i.Name, i.AdditionalComponents, i.Size, i.FinalValue, i.Quantity })
                     .ToList();
 
                 foreach (var orderedProduct in orderedProductList)
                 {
-                    ProductViewModel product = new ProductViewModel();
+                    ProductViewModel productVM = new ProductViewModel();
 
-                    product.ProductName = orderedProduct.Name;
-                    product.Size = orderedProduct.Size;
-                    product.AdditionalComponents = orderedProduct.AdditionalComponents;
-                    product.ProductPrice = orderedProduct.Value;
+                    productVM.ProductName = orderedProduct.Name;
+                    productVM.Size = orderedProduct.Size;
+                    productVM.AdditionalComponents = orderedProduct.AdditionalComponents;
+                    productVM.FinalValue = orderedProduct.FinalValue;
+                    productVM.Quantity = orderedProduct.Quantity;
 
-                    currentOrderVM.ProductList.Add(product);
+                    currentOrderVM.ProductList.Add(productVM);
                 }
 
                 if (currentOrderVMList.Count() % 2 == 0)
@@ -322,29 +327,45 @@ namespace Pizzeria.Controllers
                 MyOrderViewModel myOrderVM = new MyOrderViewModel();
                 var orderedProductList = _context.OrderedProduct
                     .Where(x => x.OrderId == myOrderDbList[i].ID)
-                    .Select(x => new { x.Name, x.Components, x.AdditionalComponents, x.Size, x.Weight, x.Value })
+                    .Select(x => new { x.Name, x.Components, x.AdditionalComponents, x.Size, x.Weight, x.FinalValue, x.Quantity })
                     .ToList();
 
                 for (int j = 0; j < orderedProductList.Count(); j++)
                 {
-                    ProductViewModel product = new ProductViewModel(
+                    ProductViewModel productVM = new ProductViewModel(
                         orderedProductList[j].Name,
                         orderedProductList[j].Components,
                         orderedProductList[j].AdditionalComponents,
                         orderedProductList[j].Size,
                         orderedProductList[j].Weight,
-                        orderedProductList[j].Value
+                        orderedProductList[j].FinalValue,
+                        orderedProductList[j].Quantity
                     );
 
-                    myOrderVM.ProductList.Add(product);
+                    myOrderVM.ProductList.Add(productVM);
                 }
 
                 myOrderVM.Value = myOrderDbList[i].Value;
                 myOrderVM.OrderDate = myOrderDbList[i].Date;
+
                 myOrderVMList.Add(myOrderVM);
             }
 
             return View(myOrderVMList);
+        }
+
+
+        [HttpPost]
+        public IActionResult EditProductInBasket(int productIndex, string quantityBtn)
+        {
+            if(quantityBtn.Equals("+"))
+                Models.SessionExtensions.EditProductQuantity(HttpContext.Session, "Basket", productIndex, true, false);
+            else if(quantityBtn.Equals("-"))
+                Models.SessionExtensions.EditProductQuantity(HttpContext.Session, "Basket", productIndex, false, true);
+
+            int quantity = Models.SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket")[productIndex].Item3;
+
+            return RedirectToAction("Basket");
         }
 
 
