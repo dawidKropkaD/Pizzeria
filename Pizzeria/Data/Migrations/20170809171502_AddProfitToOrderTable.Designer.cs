@@ -8,9 +8,10 @@ using Pizzeria.Data;
 namespace Pizzeria.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170809171502_AddProfitToOrderTable")]
+    partial class AddProfitToOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -136,8 +137,6 @@ namespace Pizzeria.Data.Migrations
 
                     b.Property<decimal>("Price");
 
-                    b.Property<decimal>("Profit");
-
                     b.HasKey("ID");
 
                     b.ToTable("AdditionaComponent");
@@ -211,8 +210,6 @@ namespace Pizzeria.Data.Migrations
 
                     b.Property<string>("ProductName")
                         .IsRequired();
-
-                    b.Property<decimal>("Profit");
 
                     b.Property<double?>("Size");
 

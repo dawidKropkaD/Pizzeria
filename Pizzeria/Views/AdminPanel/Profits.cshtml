@@ -1,0 +1,33 @@
+﻿@model Pizzeria.ViewModels.ProfitsViewModel
+
+@{
+    ViewData["Title"] = "Zyski";
+}
+
+<h2>Zyski</h2>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr class="bg-primary">
+            <th>@Html.DisplayNameFor(x => x.ProfitList[0].OrderDate)</th>
+            <th>@Html.DisplayNameFor(x => x.ProfitList[0].PaidForOrder)</th>
+            <th>@Html.DisplayNameFor(x => x.ProfitList[0].OrderProfit)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = Model.ProfitList.Count() - 1; i >= 0; i--)
+        {
+            <tr>
+                <td>@Html.DisplayFor(x => x.ProfitList[i].OrderDate)</td>
+                <td>@Html.DisplayFor(x => x.ProfitList[i].PaidForOrder)</td>
+                <td>@Html.DisplayFor(x => x.ProfitList[i].OrderProfit)</td>
+            </tr>
+        }
+        <tr>
+            <th>Suma:</th>
+            <th>@Html.DisplayFor(x => x.PaidForOrderSum)</th>
+            <th>@Html.DisplayFor(x => x.ProfitSum)</th>
+        </tr>
+    </tbody>
+</table>

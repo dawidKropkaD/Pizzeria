@@ -176,6 +176,12 @@ namespace Pizzeria.Controllers
 
                 OrderBusinessLayer orderBL = new OrderBusinessLayer();
                 List<OrderedProduct> orderedProductList = orderBL.GetOrderedProductList(basket, _context);
+                decimal orderProductionCost = 0;    //production cost of ordered products
+
+                for (int i = 0; i < basket.Count(); i++)
+                {
+                    orderProductionCost += (orderBL.GetProductProductionCost(basket[i].Item1, basket[i].Item2, _context)) * basket[i].Item3;
+                }
                 
                 //Create order
                 Order order = new Order();
@@ -199,6 +205,7 @@ namespace Pizzeria.Controllers
                 order.Street = deliveryFormVM.Street;
                 order.HouseNumber = deliveryFormVM.HouseNumber;
                 order.FlatNumber = deliveryFormVM.FlatNumber;
+                order.Profit = order.Value - orderProductionCost;
 
                 _context.Add(order);
                 await _context.SaveChangesAsync();

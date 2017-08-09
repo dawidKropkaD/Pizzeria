@@ -35,5 +35,12 @@ namespace Pizzeria.Models
         public bool IsInLocal { get; set; }
 
         public bool IsOnline { get; set; }
+
+        /// <summary>
+        /// In zloty
+        /// </summary>
+        [Display(Name = "Marża")]
+        [DisplayFormat(DataFormatString = "{0:n2} zł")]
+        public decimal Profit { get; set; }
     }
 }

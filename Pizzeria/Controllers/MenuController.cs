@@ -108,15 +108,15 @@ namespace Pizzeria.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline")] ProductDb menu)
+        public async Task<IActionResult> Create([Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline,Profit")] ProductDb productDb)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(menu);
+                _context.Add(productDb);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(menu);
+            return View(productDb);
         }
 
 
@@ -145,7 +145,7 @@ namespace Pizzeria.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline")] ProductDb productDb)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ProductName,Category,SubCategory,Components,Price,Size,Weight,IsInLocal,IsOnline,Profit")] ProductDb productDb)
         {
             if (id != productDb.ID)
             {

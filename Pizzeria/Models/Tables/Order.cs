@@ -36,5 +36,10 @@ namespace Pizzeria.Models.Tables
         public bool Completed { get; set; }
 
         public virtual bool Sound { get; set; } = true;
+
+        /// <summary>
+        /// In zloty
+        /// </summary>
+        public decimal Profit { get; set; }
     }
 }

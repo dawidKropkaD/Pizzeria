@@ -172,5 +172,33 @@ namespace Pizzeria.Models
 
             return true;
         }
+
+        public decimal GetProductProductionCost(int productId, List<int> additionalComponentIdList, ApplicationDbContext context)
+        {
+            decimal productionCost = 0;
+            var productDb = context.ProductDb
+                .Where(x => x.ID == productId)
+                .Select(i => new { i.Price, i.Profit })
+                .SingleOrDefault();
+
+            productionCost = productDb.Price - productDb.Profit;
+
+            if (additionalComponentIdList == null || additionalComponentIdList.Count() == 0)
+            {
+                return productionCost;
+            }
+
+            for (int i = 0; i < additionalComponentIdList.Count(); i++)
+            {
+                var additionalComponentDb = context.AdditionaComponent
+                    .Where(x => x.ID == additionalComponentIdList[i])
+                    .Select(y => new { y.Price, y.Profit })
+                    .SingleOrDefault();
+
+                productionCost += additionalComponentDb.Price - additionalComponentDb.Profit;
+            }
+
+            return productionCost;
+        }
     }
 }
