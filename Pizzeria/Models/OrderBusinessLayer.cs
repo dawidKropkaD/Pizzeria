@@ -71,6 +71,8 @@ namespace Pizzeria.Models
         /// </summary>
         public decimal GetOrderValue(decimal baseOrderPrice, bool userIsMember, string userId, ApplicationDbContext _context, bool updateMoneyPrize = false)
         {
+            baseOrderPrice = (baseOrderPrice < 20) ? 20 : baseOrderPrice;
+
             if (!userIsMember)
             {
                 return baseOrderPrice;
