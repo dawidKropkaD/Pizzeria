@@ -34,5 +34,7 @@ namespace Pizzeria.Models.Tables
 
         [Display(Name = "Zrealizowane")]
         public bool Completed { get; set; }
+
+        public virtual bool Sound { get; set; } = true;
     }
 }

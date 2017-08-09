@@ -235,12 +235,13 @@ namespace Pizzeria.Controllers
         [Authorize(Roles = "Admin, Employee")]
         public IActionResult CurrentOrders()
         {
-            List<CurrentOrderViewModel> currentOrderVMList = new List<CurrentOrderViewModel>();
+            CurrentOrdersViewModel currentOrdersVM = new CurrentOrdersViewModel();
             List<Order> currentOrderList = _context.Order.Where(x => x.Completed == false).ToList();
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             foreach (var item in currentOrderList)
             {
-                CurrentOrderViewModel currentOrderVM = new CurrentOrderViewModel(item);
+                CurrentOrdersViewModel.CurrentOrder currentOrder = new CurrentOrdersViewModel.CurrentOrder(item);
                 
                 var orderedProductList = _context.OrderedProduct
                     .Where(x => x.OrderId == item.ID)
@@ -257,26 +258,37 @@ namespace Pizzeria.Controllers
                     productVM.FinalValue = orderedProduct.FinalValue;
                     productVM.Quantity = orderedProduct.Quantity;
 
-                    currentOrderVM.ProductList.Add(productVM);
+                    currentOrder.ProductList.Add(productVM);
                 }
 
-                if (currentOrderVMList.Count() % 2 == 0)
-                    currentOrderVM.BackgroundColor = "lightblue";
+                if (currentOrdersVM.CurrentOrderList.Count() % 2 == 0)
+                    currentOrder.BackgroundColor = "lightblue";
                 else
-                    currentOrderVM.BackgroundColor = "lightcyan";
+                    currentOrder.BackgroundColor = "lightcyan";
 
-                currentOrderVMList.Add(currentOrderVM);
+                if (item.Sound)
+                {
+                    if(isAjax)
+                    {
+                        currentOrdersVM.Sound = true;
+                        currentOrder.HtmlClass = "animation";
+                    }
+
+                    item.Sound = false;
+                    _context.Update(item);
+                    _context.SaveChanges();
+                }
+
+                currentOrdersVM.CurrentOrderList.Add(currentOrder);
             }
-
-            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             if (isAjax)
             {
-                return PartialView("_CurrentOrdersPartial", currentOrderVMList);
+                return PartialView("_CurrentOrdersPartial", currentOrdersVM);
             }
             else
             {
-                return View(currentOrderVMList);
+                return View(currentOrdersVM);
             }
         }
 

@@ -1,17 +1,22 @@
-﻿@model List<Pizzeria.ViewModels.CurrentOrderViewModel>
+﻿@model Pizzeria.ViewModels.CurrentOrdersViewModel
 
-@for (int i = Model.Count - 1; i >= 0; i--)
+@if (Model.Sound)
 {
-    <div style="background-color:@Model[i].BackgroundColor">
+    <embed src="~/sounds/sms.mp3" width="180" height="90" loop="false" autostart="false" hidden="hidden" />
+}
+
+@for (int i = Model.CurrentOrderList.Count - 1; i >= 0; i--)
+{
+    <div class="@Model.CurrentOrderList[i].HtmlClass" style="background-color:@Model.CurrentOrderList[i].BackgroundColor">
         <table style="display:inline">
             <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(x => Model[0].Completed)</th>
+                    <th>@Html.DisplayNameFor(x => Model.CurrentOrderList[0].Completed)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td style="text-align:center"><input type="checkbox" class="completed" name="@Model[i].ID" /></td>
+                    <td style="text-align:center"><input type="checkbox" class="completed" name="@Model.CurrentOrderList[i].ID" /></td>
                 </tr>
             </tbody>
         </table>
@@ -20,38 +25,45 @@
 
         <table style="display:inline">
             <tr>
-                <td><strong>@Html.DisplayNameFor(model => model[0].ClientName):&nbsp;</strong></td>
-                <td>@Html.DisplayFor(model => model[i].ClientName)</td>
+                <td><strong>@Html.DisplayNameFor(model => model.CurrentOrderList[0].ClientName):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model.CurrentOrderList[i].ClientName)</td>
             </tr>
             <tr>
-                <td><strong>@Html.DisplayNameFor(model => model[0].Phone):&nbsp;</strong></td>
-                <td>@Html.DisplayFor(model => model[i].Phone)</td>
+                <td><strong>@Html.DisplayNameFor(model => model.CurrentOrderList[0].Phone):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model.CurrentOrderList[i].Phone)</td>
             </tr>
             <tr>
                 <td><strong>Adres:&nbsp;</strong></td>
                 <td>
-                    @Html.DisplayFor(model => model[i].City),
-                    @Html.DisplayFor(x => x[i].Street)
-                    @Html.DisplayFor(x => x[i].HouseNumber)
-                    @if (!String.IsNullOrEmpty(Model[i].FlatNumber))
+                    @Html.DisplayFor(model => model.CurrentOrderList[i].City),
+                    @Html.DisplayFor(x => x.CurrentOrderList[i].Street)
+                    @Html.DisplayFor(x => x.CurrentOrderList[i].HouseNumber)
+                    @if (!String.IsNullOrEmpty(Model.CurrentOrderList[i].FlatNumber))
                 {
                         <span>/</span>
                     }
-                    @Html.DisplayFor(x => x[i].FlatNumber)
+                    @Html.DisplayFor(x => x.CurrentOrderList[i].FlatNumber)
                 </td>
             </tr>
             <tr>
-                <td><strong>@Html.DisplayNameFor(model => model[0].Value):&nbsp;</strong></td>
-                <td>@Html.DisplayFor(model => model[i].Value)</td>
+                <td><strong>@Html.DisplayNameFor(model => model.CurrentOrderList[0].Value):&nbsp;</strong></td>
+                <td>@Html.DisplayFor(model => model.CurrentOrderList[i].Value)</td>
             </tr>
         </table>
 
         <div style="display:inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 
 
-            @Html.Partial("_ProductsListPartial", Model[i].ProductList)
+            @Html.Partial("_ProductsListPartial", Model.CurrentOrderList[i].ProductList)
     </div>
 
     <hr />
     <br />
 }
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+<script type="text/javascript">
+    $(".animation").delay(100).fadeOut().fadeIn('slow').delay(100).fadeOut().fadeIn('slow')
+        .delay(100).fadeOut().fadeIn('slow').delay(100).fadeOut().fadeIn('slow').delay(100).fadeOut().fadeIn('slow')
+</script>

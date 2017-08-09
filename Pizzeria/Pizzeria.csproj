@@ -11,6 +11,10 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-Pizzeria-6b806879-c817-4362-b4ab-7e92711d1bc0</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\sounds\sms.mp3" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
