@@ -29,7 +29,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 21.04M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -40,7 +41,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 28.40M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -51,7 +53,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 22.64M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -62,7 +65,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 29.20M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -73,7 +77,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 22.64M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -84,7 +89,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 31.60M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -95,7 +101,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 22.64M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -106,7 +113,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 31.60M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -117,7 +125,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 22.64M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -128,7 +137,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 31.60M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -139,7 +149,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 23.12M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -150,7 +161,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 33.36M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -161,7 +173,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 23.12M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -172,7 +185,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 33.36M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
 
                 new ProductDb
@@ -183,7 +197,8 @@ namespace Pizzeria.Models
                     Size = 30,
                     Price = 23.12M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 15M
                 },
 
                 new ProductDb
@@ -194,7 +209,8 @@ namespace Pizzeria.Models
                     Size = 45,
                     Price = 33.36M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 20M
                 },
             #endregion
 
@@ -206,7 +222,8 @@ namespace Pizzeria.Models
                     Weight = 80,
                     Price = 1.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 0.9M
                 },
 
                 new ProductDb
@@ -216,7 +233,8 @@ namespace Pizzeria.Models
                     Weight = 80,
                     Price = 1.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 0.9M
                 },
 
                 new ProductDb
@@ -226,12 +244,12 @@ namespace Pizzeria.Models
                     Weight = 80,
                     Price = 1.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 0.9M
                 },
             #endregion
 
             #region Sałatki
-                //SAŁATKI
                 new ProductDb
                 {
                     ProductName = "Sałatka z tuńczykiem",
@@ -239,7 +257,8 @@ namespace Pizzeria.Models
                     Components = "Sałata, pomidor, kapusta pekińska, ogórek kiszony, fasola czerwona, kukurydza, tuńczyk, sos jogurtowy",
                     Price = 13.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 7M
                 },
 
                 new ProductDb
@@ -249,7 +268,8 @@ namespace Pizzeria.Models
                     Components = "Sałata, pomidor, kapusta pekińska, ananas, brzoskwinia, kurczak grilowany, rodzynki, sos gyros",
                     Price = 13.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 7M
                 },
 
                 new ProductDb
@@ -259,7 +279,8 @@ namespace Pizzeria.Models
                     Components = "Kapusta pekińska, sałata lodowa, pomidor, cebula czerwona, ogórek świezy, ser feta, oliwki czarne, oliwki zielone, sos grecki",
                     Price = 13.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 7M
                 },
 
                 new ProductDb
@@ -269,7 +290,8 @@ namespace Pizzeria.Models
                     Components = "Sałata lodowa, łosoś wędzony, pomidor koktajlowy, cebula czerwona, cytryna, kapary, koperek, oliwa",
                     Price = 15.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 8M
                 },
             #endregion
 
@@ -281,7 +303,8 @@ namespace Pizzeria.Models
                     SubCategory = "Czekolada",
                     Price = 8M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 5M
                 },
 
                 new ProductDb
@@ -291,7 +314,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 3.20M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 2.2M
                 },
 
                 new ProductDb
@@ -301,7 +325,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 3.20M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 2.2M
                 },
 
                 new ProductDb
@@ -311,7 +336,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 3.20M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 2.2M
                 },
 
                 new ProductDb
@@ -321,7 +347,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 4.50M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -331,7 +358,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 5.50M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3.5M
                 },
 
                 new ProductDb
@@ -341,7 +369,8 @@ namespace Pizzeria.Models
                     SubCategory = "Pepsi/7Up/Mirinda",
                     Price = 5.50M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3.5M
                 },
 
                 new ProductDb
@@ -351,7 +380,8 @@ namespace Pizzeria.Models
                     SubCategory = "Woda mineralna",
                     Price = 3.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -361,7 +391,8 @@ namespace Pizzeria.Models
                     SubCategory = "Woda mineralna",
                     Price = 3.90M,
                     IsInLocal = true,
-                    IsOnline = true
+                    IsOnline = true,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -371,7 +402,8 @@ namespace Pizzeria.Models
                     SubCategory = "Kawa",
                     Price = 4M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -381,7 +413,8 @@ namespace Pizzeria.Models
                     SubCategory = "Kawa",
                     Price = 4M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -391,7 +424,8 @@ namespace Pizzeria.Models
                     SubCategory = "Kawa",
                     Price = 6M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3M
                 },
             #endregion
 
@@ -403,7 +437,8 @@ namespace Pizzeria.Models
                     Components = "Sos pomidorowy łagodny, Ser mozarella, Oregano",
                     Price = 6.50M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 3M
                 },
 
                 new ProductDb
@@ -413,7 +448,8 @@ namespace Pizzeria.Models
                     Components = "Sos pomidorowy łagodny, Ser mozarella, Oregano, Pieczarki",
                     Price = 8.40M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 4M
                 },
 
                 new ProductDb
@@ -423,7 +459,8 @@ namespace Pizzeria.Models
                     Components = "Sos pomidorowy łagodny, Ser mozarella, Oregano, Pieczarki, Szynka, Kurczak grillowany",
                     Price = 9.40M,
                     IsInLocal = true,
-                    IsOnline = false
+                    IsOnline = false,
+                    Profit = 5M
                 }
                 #endregion
             );
@@ -445,37 +482,92 @@ namespace Pizzeria.Models
                 {
                     Name = "Ananas",
                     Category = "Pizza",
-                    Price = 2.80M
+                    Price = 2.80M,
+                    Profit = 2M
                 },
                 new AdditionalComponent
                 {
                     Name = "Brokuły",
                     Category = "Pizza",
-                    Price = 2.80M
+                    Price = 2.80M,
+                    Profit = 2M
                 },
                 new AdditionalComponent
                 {
                     Name = "Cebula",
                     Category = "Pizza",
-                    Price = 2.80M
+                    Price = 2.80M,
+                    Profit = 2M
                 },
                 new AdditionalComponent
                 {
                     Name = "Curry",
                     Category = "Pizza",
-                    Price = 2.80M
+                    Price = 2.80M,
+                    Profit = 2M
                 },
                 new AdditionalComponent
                 {
                     Name = "Fasola czerwona",
                     Category = "Pizza",
-                    Price = 2.80M
+                    Price = 2.80M,
+                    Profit = 2M
                 },
                 new AdditionalComponent
                 {
-                    Name = "Cukier",
-                    Category = "Kawa",
-                    Price = 0.99M
+                    Name = "Kiełbasa",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Kurczak grillowany",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Ogórek kiszony",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Oliwki zielone",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Owoce morza",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Papryka",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Pomidor",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
+                },
+                new AdditionalComponent
+                {
+                    Name = "Rucola",
+                    Category = "Pizza",
+                    Price = 2.80M,
+                    Profit = 2M
                 }
             );
 

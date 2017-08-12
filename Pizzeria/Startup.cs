@@ -15,6 +15,7 @@ using Pizzeria.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Pizzeria.Models.Tables;
 
 namespace Pizzeria
 {
@@ -51,6 +52,15 @@ namespace Pizzeria
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            });
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -120,6 +130,16 @@ namespace Pizzeria
             });
 
             await CreateRoles(serviceProvider);
+            await CreateUsers(serviceProvider, app.ApplicationServices.GetService<ApplicationDbContext>(),
+                "admin@example.pl", "admin@example.pl", "Admin", "123456789", 
+                new Address { City="Warszawa", Street = "Bonifraterska", HouseNumber = "6" });
+            await CreateUsers(serviceProvider, app.ApplicationServices.GetService<ApplicationDbContext>(),
+                "employee@example.pl", "employee@example.pl", "Employee", "987654321",
+                new Address { City = "Warszawa", Street = "al. Solidarności", HouseNumber = "86", FlatNumber = "88" });
+            await CreateUsers(serviceProvider, app.ApplicationServices.GetService<ApplicationDbContext>(),
+                "member@example.pl", "member@example.pl", "Member", "741236985",
+                new Address { City = "Warszawa", Street = "Żelazna", HouseNumber = "32" });
+
             SeedData.InitializeMenu(serviceProvider);
             SeedData.InitializeAdditionalComponents(serviceProvider);
         }
@@ -131,7 +151,6 @@ namespace Pizzeria
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string[] roleNames = { "Admin", "Employee", "Member" };
             IdentityResult roleResult;
 
@@ -140,28 +159,45 @@ namespace Pizzeria
                 var roleExist = await RoleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    //create the roles and seed them to the database: Question 1
                     roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
+        }
 
-            //Here you could create a super user who will maintain the web app
-            var poweruser = new ApplicationUser
+
+        private async Task CreateUsers(IServiceProvider serviceProvider, ApplicationDbContext context,
+            string name, string email, string role, string phone, Address address)
+        {
+            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var user = new ApplicationUser
             {
-                UserName = "DawidKropkaD@wp.pl",
-                Email = "DawidKropkaD@wp.pl",
+                UserName = name,
+                Email = email,
+                PhoneNumber = phone
             };
-            //Ensure you have these values in your appsettings.json file
-            string userPWD = "TymczasoweHasło.1";
-            var _user = await UserManager.FindByEmailAsync("DawidKropkaD@wp.pl");
+
+            string userPWD = "qwerty";
+            var _user = await UserManager.FindByEmailAsync(user.Email);
 
             if (_user == null)
             {
-                var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
-                if (createPowerUser.Succeeded)
+                var createUser = await UserManager.CreateAsync(user, userPWD);
+                if (createUser.Succeeded)
                 {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, "Admin");
+                    await UserManager.AddToRoleAsync(user, role);
+
+                    UserDb userDb = new UserDb
+                    {
+                        AspNetUserId = user.Id,
+                        LoyaltyPoints = 0,
+                        MoneyPrize = 0,
+                        City = address.City,
+                        Street = address.Street,
+                        HouseNumber = address.HouseNumber,
+                        FlatNumber = address.FlatNumber
+                    };
+                    context.Add(userDb);
+                    context.SaveChanges();
                 }
             }
         }
