@@ -2,18 +2,17 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <div class="menuWrap">
-        <ul class="menu">
-            <li class="link"><a asp-controller="Order" asp-action="MyOrders">Moje zamówienia</a></li>
-            @if (User.IsInRole("Member"))
-            {
-                <li class="link"><a asp-controller="Manage" asp-action="LoyaltyPoints">Punkty lojalnościowe</a></li>
-            }
-            @if (User.IsInRole("Admin"))
-            {
-                <li class="link"><a asp-controller="AdminPanel" asp-action="Index">Admin</a></li>
-                <li class="link"><a asp-controller="AdminPanel" asp-action="Profits">Zyski</a></li>
-            }
-        </ul>
-    </div>
+    <li><a asp-controller="Order" asp-action="MyOrders">Moje zamówienia</a></li>
+    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+    {
+        <li><a asp-area="" asp-controller="Order" asp-action="CurrentOrders">Bieżące zamówienia</a></li>
+    }
+    @if (User.IsInRole("Member"))
+    {
+        <li><a asp-controller="Manage" asp-action="LoyaltyPoints">Punkty lojalnościowe</a></li>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <li><a asp-controller="AdminPanel" asp-action="Profits">Zyski</a></li>
+    }
 }

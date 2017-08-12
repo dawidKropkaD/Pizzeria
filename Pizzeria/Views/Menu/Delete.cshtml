@@ -1,12 +1,12 @@
-@model Pizzeria.Models.ProductDb
+﻿@model Pizzeria.Models.ProductDb
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Usuń";
 }
 
-<h2>Delete</h2>
+<h2>Usuń</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Czy na pewno chcesz usunąć ten produkt?</h3>
 <div>
     <h4>Menu</h4>
     <hr />
@@ -70,7 +70,7 @@
     <form asp-action="Delete">
         <div class="form-actions no-color">
             <input type="hidden" asp-for="ID" />
-            <input type="submit" value="Delete" class="btn btn-default" />
+            <input type="submit" value="Usuń" class="btn btn-default" />
         </div>
     </form>
 </div>
