@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Pizzeria.Models.ManageViewModels
 {
-    public class IndexViewModel
+    public class IndexViewModel : Address
     {
         public bool HasPassword { get; set; }
 

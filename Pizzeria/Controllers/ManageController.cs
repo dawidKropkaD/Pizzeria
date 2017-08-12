@@ -51,12 +51,13 @@ namespace Pizzeria.Controllers
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+                message == ManageMessageId.ChangePasswordSuccess ? "Hasło zostało zmienione."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
+                : message == ManageMessageId.AddPhoneSuccess ? "Nr telefonu został zmieniony."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                : message == ManageMessageId.ChangeAddressSuccess ? "Adres został zmieniony."
                 : "";
 
             var user = await GetCurrentUserAsync();
@@ -64,13 +65,19 @@ namespace Pizzeria.Controllers
             {
                 return View("Error");
             }
+
+            var userDb = _context.UserDb.Single(x => x.AspNetUserId.Equals(user.Id));
             var model = new IndexViewModel
             {
                 HasPassword = await _userManager.HasPasswordAsync(user),
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                City = userDb.City,
+                Street = userDb.Street,
+                HouseNumber = userDb.HouseNumber,
+                FlatNumber = userDb.FlatNumber
             };
             return View(model);
         }
@@ -91,6 +98,30 @@ namespace Pizzeria.Controllers
             loyaltyPointsVm.MoneyPrize = userDb.MoneyPrize;
 
             return View(loyaltyPointsVm);
+        }
+
+
+        public IActionResult ChangeAddress()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeAddress(ChangeAddressViewModel model)
+        {
+            var user = await GetCurrentUserAsync();
+            var userDb = _context.UserDb.Single(x => x.AspNetUserId.Equals(user.Id));
+
+            userDb.Street = model.Street;
+            userDb.HouseNumber = model.HouseNumber;
+            userDb.FlatNumber = model.FlatNumber;
+
+            _context.Update(userDb);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { Message = ManageMessageId.ChangeAddressSuccess });
         }
 
 
@@ -131,15 +162,18 @@ namespace Pizzeria.Controllers
             {
                 return View(model);
             }
-            // Generate the token and send it
+
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
                 return View("Error");
             }
-            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
-            await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
-            return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
+
+            user.PhoneNumber = model.PhoneNumber;
+            _context.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
         }
 
         //
@@ -385,7 +419,8 @@ namespace Pizzeria.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
-            Error
+            Error,
+            ChangeAddressSuccess
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync()

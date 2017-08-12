@@ -1,0 +1,48 @@
+﻿@model Pizzeria.Models.ManageViewModels.ChangeAddressViewModel
+@{
+    ViewData["Title"] = "Zmień adres";
+}
+
+<h2>@ViewData["Title"].</h2>
+
+<form asp-controller="Manage" asp-action="ChangeAddress" method="post" class="form-horizontal">
+    <h4>Formularz zmiany adresu</h4>
+    <hr />
+    <div class="form-group">
+        <label asp-for="City" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="City" class="form-control" value="Warszawa" readonly="readonly" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Street" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Street" class="form-control" />
+            <span asp-validation-for="Street" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="HouseNumber" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="HouseNumber" class="form-control" />
+            <span asp-validation-for="HouseNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="FlatNumber" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="FlatNumber" class="form-control" />
+            <span asp-validation-for="FlatNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Zmień adres</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
