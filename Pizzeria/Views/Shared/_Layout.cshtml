@@ -34,7 +34,7 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Menu" asp-action="Index">Menu w lokalu</a></li>
                     <li><a asp-area="" asp-controller="Menu" asp-action="OnlineMenu">Menu online</a></li>
-                    <li><a asp-area="" asp-controller="Order" asp-action="Basket">Koszyk</a></li>
+                    @await Component.InvokeAsync("Basket")
                     <li><a asp-area="" asp-controller="Order" asp-action="CurrentOrders">Bieżące zamówienia</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
