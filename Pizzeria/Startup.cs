@@ -45,7 +45,7 @@ namespace Pizzeria
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer("Server=SQL6003.SmarterASP.NET;Initial Catalog=DB_A2953C_pizzeria;User Id=DB_A2953C_pizzeria_admin;Password=qwerty12;"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
