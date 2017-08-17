@@ -74,6 +74,13 @@ namespace Pizzeria.Controllers
             return View(menuVM);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult OnlineMenu(Basket.ItemContainer itemsContainer)
+        {
+            return View();
+        }
+
 
         // GET: Menu/Details/5
         [Authorize(Roles = "Admin")]

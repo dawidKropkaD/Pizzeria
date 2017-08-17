@@ -10,13 +10,13 @@
     <thead>
         <tr class="bg-primary">
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].ProductName)
+                @Html.DisplayNameFor(model => model.ItemsContainerList[0].ProductVMList[0].ProductName)
             </th>
             <th>
                 Rodzaj
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].FinalValue)
+                @Html.DisplayNameFor(model => model.ItemsContainerList[0].ProductVMList[0].FinalValue)
             </th>
             <th>
                 Ilość
@@ -25,46 +25,58 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Products.Count(); i++)
+        @for (int i = 0; i < Model.ItemsContainerList.Count(); i++)
         {
-            <tr>
-                <td>
-                    <strong>
-                        @Html.DisplayFor(modelItem => Model.Products[i].ProductName)
-                    </strong>
-                    @Html.Partial("_ProductDetailsPartial", new Pizzeria.ViewModels.ProductDetailsViewModel(
-                        Model.Products[i].Components, Model.Products[i].AdditionalComponents, Model.Products[i].Weight))
-                </td>
-                <td>
-                    @if (Model.Products[i].Size != null)
+            @for (int j = 0; j < Model.ItemsContainerList[i].ProductVMList.Count(); j++)
+            {
+                <tr>
+                    <td>
+                        <strong>
+                            @Html.DisplayFor(modelItem => Model.ItemsContainerList[i].ProductVMList[j].ProductName)
+                        </strong>
+                        @Html.Partial("_ProductDetailsPartial", new Pizzeria.ViewModels.ProductDetailsViewModel(
+                            Model.ItemsContainerList[i].ProductVMList[j].Components, 
+                            Model.ItemsContainerList[i].ProductVMList[j].AdditionalComponents, 
+                            Model.ItemsContainerList[i].ProductVMList[j].Weight))
+                    </td>
+                    <td>
+                        @if (Model.ItemsContainerList[i].ProductVMList[j].Size != null)
                     {
-                        <span>ok </span>@Model.Products[i].Size<span>cm</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Products[i].FinalValue)
-                </td>
-                <td style="max-width:50px">
-                    <form asp-action="EditProductInBasket">
-                        <input type="hidden" name="productIndex" value="@i" />
-                        <input name="quantityBtn" type="submit" class="btn-link" value="+" />
-                        <input id="quantityInput" type="text" class="form-control" 
-                                value="@Model.Products[i].Quantity" min="1" max="100" readonly="readonly" />
-                        <input name="quantityBtn" type="submit" class="btn-link" value="-" />
-                    </form>
-                </td>
-                <td>
-                    <form asp-action="DeleteFromBasket">
-                        <input type="hidden" name="productIndex" value="@i" />
-                        <input type="submit" value="Usuń" class="btn btn-link" />
-                    </form>
-                </td>
+                            <span>ok </span>@Model.ItemsContainerList[i].ProductVMList[j].Size<span>cm</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.ItemsContainerList[i].ProductVMList[j].FinalValue)
+                    </td>
+                    <td style="max-width:50px">
+                        <form asp-action="EditProductInBasket">
+                            <input type="hidden" name="productIndex" value="@i" />
+                            <input name="quantityBtn" type="submit" class="btn-link" value="+" />
+                            <input id="quantityInput" type="text" class="form-control"
+                                   value="@Model.ItemsContainerList[i].ProductVMList[j].Quantity" min="1" max="100" readonly="readonly" />
+                            <input name="quantityBtn" type="submit" class="btn-link" value="-" />
+                        </form>
+                    </td>
+                    <td>
+                        <form asp-action="DeleteFromBasket">
+                            <input type="hidden" name="productIndex" value="@i" />
+                            <input type="submit" value="Usuń" class="btn btn-link" />
+                        </form>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>@Model.ItemsContainerList[i].PromotionShortDescription</td>
             </tr>
+            <tr>
+                <td></td>
+            </tr>
+
         }
     </tbody>
 </table>
 <div style="float:right">
-    Wartość zamówienia: @Model.OrderPrice zł<br /><br />
+    Wartość zamówienia: @Model.OrderValue zł<br /><br />
     <a asp-action="DeliveryForm" class="btn btn-default">To wszystko, dostawa</a>
 </div>
 

@@ -21,11 +21,11 @@ namespace Pizzeria.ViewComponents
         public Task<IViewComponentResult> InvokeAsync()
         {
             int productNumber = 0;
-            var basket = SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket");
+            var basket = SessionExtensions.Get2(HttpContext.Session, "Basket");
 
             if (basket != null)
             {
-                productNumber = basket.Sum(x => x.Item3);
+                productNumber = basket.ItemContainerList.Sum(x => x.ItemList.Sum(y => y.Quantity));
             }
                         
             return Task.FromResult<IViewComponentResult>(View("BasketActionLink", productNumber));

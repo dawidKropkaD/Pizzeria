@@ -147,6 +147,7 @@ namespace Pizzeria.Models
             return productList;
         }
 
+        [System.Obsolete("ProductsAreEquals is duplicated with Equals in Basket.ItemContainer class, I recommend use Equals.")]
         public bool ProductsAreEquals(int productId1, List<int> additionalComponentsIds1, int productId2, List<int> additionalComponentsIds2)
         {
             if (productId1 != productId2)
@@ -199,6 +200,118 @@ namespace Pizzeria.Models
             }
 
             return productionCost;
+        }
+
+        public ProductDb TryGetOnlineProduct(ApplicationDbContext context, string name, string category, decimal price)
+        {
+            if (name == null || category == null)
+            {
+                return null;
+            }
+
+            var productDb = context.ProductDb
+                .SingleOrDefault(x => x.ProductName.Equals(name) && x.Category.Equals(category) && x.Price == price && x.IsOnline == true);
+
+            if (productDb == null)
+            {
+                return null;
+            }
+
+            return productDb;
+        }
+
+        public ProductDb TryGetOnlineProduct(ApplicationDbContext context, int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            var productDb = context.ProductDb.SingleOrDefault(x => x.ID == id && x.IsOnline == true);
+
+            if (productDb == null)
+            {
+                return null;
+            }
+
+            return productDb;
+        }
+
+        public List<Basket.ItemContainer> MergeDuplicateItemsContainers(List<Basket.ItemContainer> containerList, Basket.ItemContainer newContainer)
+        {
+            for (int i = 0; i < containerList.Count(); i++)
+            {
+                if (containerList[i].Equals(newContainer))
+                {
+                    for (int j = 0; j < containerList[i].ItemList.Count(); j++)
+                    {
+                        containerList[i].ItemList[i].Quantity += newContainer.ItemList[j].Quantity;
+                    }
+
+                    return containerList;
+                }
+            }
+
+            containerList.Add(newContainer);
+
+            return containerList;
+        }
+
+        public bool SelectedComponentsValid(ApplicationDbContext context, List<int> selectedComponentList, string productCategory)
+        {
+            if (selectedComponentList == null || selectedComponentList.Count() == 0)
+            {
+                return true;
+            }
+
+            if (productCategory == null)
+            {
+                return false;
+            }
+
+            var availableAdditionalComponentsIds = context.AdditionaComponent.Where(x => x.Category.Equals(productCategory)).Select(x => x.ID).ToList();
+
+            for (int i = 0; i < selectedComponentList.Count(); i++)
+            {
+                if (availableAdditionalComponentsIds.Contains(selectedComponentList[i]) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
+        /// <param name="productCategory">Product concerned with promotion</param>
+        public bool SelectedPromotionIdValid(ApplicationDbContext context, int? promotionId, string productCategory)
+        {
+            if (promotionId == null)
+                return true;
+
+            var availablePromotionsIds = context.Promotion
+                    .Where(x => x.ProductCategory.Equals(productCategory))
+                    .Select(x => x.ID).ToList();
+
+            if (availablePromotionsIds.Contains((int)promotionId) == false)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public Promotion.PromotionType GetPromotionType(ApplicationDbContext context, int? promotionId)
+        {
+            if (promotionId == null)
+                return Promotion.PromotionType.NoPromotion;
+
+            return context.Promotion.Single(x => x.ID == (int)promotionId).Type;
+        }
+
+        public void SetPromotionValues(BasketViewModel.ItemsContainer itemsContainer, int? promotionId)
+        {
+            if (promotionId == null)
+                return;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Pizzeria.Data
         public DbSet<OrderedProduct> OrderedProduct { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<UserDb> UserDb { get; set; }
+        public DbSet<Promotion> Promotion { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

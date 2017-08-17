@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Pizzeria.Models.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,29 +10,49 @@ namespace Pizzeria.Models
 {
     public static class SessionExtensions
     {
-        /// <param name="value">Item1: product id, item2: list of additional components ids, item3: quantity</param>
-        public static void AddProduct(this ISession session, string key, Tuple<int, List<int>, int> product)
+        public static void AddContainer(this ISession session, int productId, List<int> additionalComponentIdList, int? promotionId)
         {
-            var oldBasket = Get<List<Tuple<int, List<int>, int>>>(session, key);
+            string key = "Basket";
+            Basket.ItemContainer itemContainer = new Basket.ItemContainer();
+            Basket.Item item = new Basket.Item();
 
-            if (oldBasket == null)
+            item.ProductId = productId;
+            item.AdditionalComponentIdList = additionalComponentIdList;
+            item.Quantity = 1;
+
+            itemContainer.ItemList.Add(item);
+            itemContainer.PromotionId = promotionId;
+                        
+            var basket = Get2(session, key);
+            if (basket == null)
             {
-                List<Tuple<int, List<int>, int>> basket = new List<Tuple<int, List<int>, int>>();
-                basket.Add(product);
+                basket = new Basket();
+                
+                basket.ItemContainerList.Add(itemContainer);
+
                 session.SetString(key, JsonConvert.SerializeObject(basket));
             }
             else
             {
                 OrderBusinessLayer orderBL = new OrderBusinessLayer();
-                var currentBasket = orderBL.MergeDuplicateProducts(oldBasket, product);
+                orderBL.MergeDuplicateItemsContainers(basket.ItemContainerList, itemContainer);
 
-                session.SetString(key, JsonConvert.SerializeObject(currentBasket));
+                session.SetString(key, JsonConvert.SerializeObject(basket));
             }
         }
+
+
         public static T Get<T>(this ISession session, string key)
         {
             var value = session.GetString(key);
             return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
+        }
+
+        public static Basket Get2(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+
+            return value == null ? null : JsonConvert.DeserializeObject<Basket>(value);
         }
 
         public static void DeleteProduct(this ISession session, string key, int productIndex)

@@ -17,6 +17,9 @@ namespace Pizzeria.ViewModels
         /// </summary>
         public List<Tuple<int, string, decimal>> AdditionalComponentDetails{ get; set; }
 
+        public int? SelectedPromotionId { get; set; }
+
+
         public SelectAdditionalComponentsViewModel()
         {
             AdditionalComponentDetails = new List<Tuple<int, string, decimal>>();

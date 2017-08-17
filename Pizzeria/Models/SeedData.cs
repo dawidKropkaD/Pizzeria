@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Pizzeria.Data;
+using Pizzeria.Models.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -568,6 +569,43 @@ namespace Pizzeria.Models
                     Category = "Pizza",
                     Price = 2.80M,
                     Profit = 2M
+                }
+            );
+
+            context.SaveChanges();
+        }
+
+
+        public static void InitializePromotion(IServiceProvider serviceProvider)
+        {
+            var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
+
+            if (context.Promotion.Any())
+            {
+                return;
+            }
+
+            context.Promotion.AddRange(
+                new Promotion
+                {
+                    Type = (Promotion.PromotionType)1,
+                    Description = "Rabat 20% na pizze zamówione przez internet, telefon lub osobiście we wszystkie dni tygodnia.",
+                    ShortDescription = "Rabat 20%",
+                    ProductCategory = "Pizza"
+                },
+                new Promotion
+                {
+                    Type = (Promotion.PromotionType)2,
+                    Description = "Do każdej pizzy litr napoju bezalkoholowego gratis, oferta ważna przez cały tydzień.",
+                    ShortDescription = "Litr napoju gratis",
+                    ProductCategory = "Pizza"
+                },
+                new Promotion
+                {
+                    Type = (Promotion.PromotionType)3,
+                    Description = "Druga taka sama pizza za 1,99zł, oferta ważna codziennie w lokalu i w dostawie.",
+                    ShortDescription = "Druga taka sama za 1,99",
+                    ProductCategory = "Pizza"
                 }
             );
 

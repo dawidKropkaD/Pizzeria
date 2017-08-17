@@ -33,23 +33,49 @@ namespace Pizzeria.Controllers
             return View();
         }
 
-        public IActionResult SelectAdditionalComponents(string productName, string productCategory, decimal price)
+        public IActionResult SelectPromotion(string productName, string productCategory, decimal price)
         {
-            if (productName == null || productCategory == null)
-            {
-                return NotFound();
-            }
+            OrderBusinessLayer orderBL = new OrderBusinessLayer();
+            var productDb = orderBL.TryGetOnlineProduct(_context, productName, productCategory, price);
 
-            var productDb = _context.ProductDb.SingleOrDefault(x => x.ProductName.Equals(productName) && x.Category.Equals(productCategory) && x.Price == price);
             if (productDb == null)
             {
-                return NotFound();
+                return View("Error");
             }
 
-            var availableComponents = _context.AdditionaComponent.Where(x => x.Category.Equals(productCategory)).ToList();
+            var promotionDbList = _context.Promotion.Where(x => x.ProductCategory.Equals(productCategory)).ToList();
+
+            if (promotionDbList == null || promotionDbList.Count() == 0)
+            {
+                return RedirectToAction("SelectAdditionalComponents", new { productId = productDb.ID });
+            }
+
+            SelectPromotionViewModel selectPromoionVM = new SelectPromotionViewModel();
+            selectPromoionVM.ProductId = productDb.ID;
+
+            for (int i = 0; i < promotionDbList.Count(); i++)
+            {
+                selectPromoionVM.PossiblePromotionList.Add(new SelectPromotionViewModel.SelectPromotion(
+                    promotionDbList[i].ID, promotionDbList[i].Description, promotionDbList[i].ShortDescription));
+            }
+
+            return View(selectPromoionVM);
+        }
+
+        public IActionResult SelectAdditionalComponents(int productId, int? selectedPromotionId = null)
+        {
+            OrderBusinessLayer orderBL = new OrderBusinessLayer();
+            var productDb = orderBL.TryGetOnlineProduct(_context, productId);
+
+            if (productDb == null)
+            {
+                return View("Error");
+            }
+
+            var availableComponents = _context.AdditionaComponent.Where(x => x.Category.Equals(productDb.Category)).ToList();
             if (availableComponents.Count() == 0)
             {
-                return AddToBasket(productDb.ID, null);
+                return AddToBasket(productDb.ID, null, selectedPromotionId);
             }
 
             SelectAdditionalComponentsViewModel additionalComponentsVM = new SelectAdditionalComponentsViewModel();
@@ -57,29 +83,48 @@ namespace Pizzeria.Controllers
             additionalComponentsVM.ProductName = productDb.ProductName;
             additionalComponentsVM.ProductComponents = productDb.Components;
             additionalComponentsVM.PriceOfOrder = productDb.Price;
+            additionalComponentsVM.SelectedPromotionId = selectedPromotionId;
 
             foreach (var item in availableComponents)
             {
                 additionalComponentsVM.AdditionalComponentDetails.Add(new Tuple<int, string, decimal>(item.ID, item.Name, item.Price));
             }
-
-
+            
             return View(additionalComponentsVM);
         }
 
         [HttpPost]
-        public IActionResult AddToBasket(int productId, List<int> additionaComponentsIDs)
+        public IActionResult AddToBasket(int productId, List<int> additionalComponentsIDs, int? selectedPromotionId = null)
         {
-            Models.SessionExtensions.AddProduct(HttpContext.Session, "Basket", new Tuple<int, List<int>, int>(productId, additionaComponentsIDs, 1));
+            OrderBusinessLayer orderBL = new OrderBusinessLayer();
+            var productDb = orderBL.TryGetOnlineProduct(_context, productId);
+
+            if (productDb == null)
+            {
+                return View("Error");
+            }
+
+            if(orderBL.SelectedComponentsValid(_context, additionalComponentsIDs, productDb.Category) == false)
+            {
+                return View("Error");
+            }
+
+            int? promotionId = null;
+            if(orderBL.SelectedPromotionIdValid(_context, selectedPromotionId, productDb.Category))
+            {
+                promotionId = selectedPromotionId;
+            }
+
+            Models.SessionExtensions.AddContainer(HttpContext.Session, productId, additionalComponentsIDs, promotionId);
 
             return RedirectToAction("Basket");
         }
 
         public IActionResult Basket()
         {
-            var basket = Models.SessionExtensions.Get<List<Tuple<int, List<int>, int>>>(HttpContext.Session, "Basket");
+            var basket = Models.SessionExtensions.Get2(HttpContext.Session, "Basket");
 
-            if (basket == null || basket.Count() == 0)
+            if (basket == null || basket.ItemContainerList.Count() == 0)
             {
                 return View("EmptyBasket");
             }
@@ -88,29 +133,40 @@ namespace Pizzeria.Controllers
             BasketViewModel basketVM = new BasketViewModel();
             decimal baseOrderPrice = 0;
 
-            for (int i = 0; i < basket.Count(); i++)
+            for (int i = 0; i < basket.ItemContainerList.Count(); i++)
             {
-                var productDb = _context.ProductDb.SingleOrDefault(x => x.ID == basket[i].Item1);
-                if (productDb == null)
-                    continue;
+                BasketViewModel.ItemsContainer itemsContainer = new BasketViewModel.ItemsContainer();
+                int? promotionId = basket.ItemContainerList[i].PromotionId;
 
-                var additionalComponent = _context.AdditionaComponent.Where(x => basket[i].Item2.Contains(x.ID)).ToList();
+                itemsContainer.PromotionShortDescription = "";
+                if (promotionId != null)
+                    itemsContainer.PromotionShortDescription = _context.Promotion.Single(x => x.ID == (int)promotionId).ShortDescription;
 
-                decimal productPrice = productDb.Price + orderBL.GetAdditionalComponentsPrice(additionalComponent);
-                decimal finalProductValue = productPrice * basket[i].Item3;
-                baseOrderPrice += finalProductValue;
+                for (int j = 0; j < basket.ItemContainerList[i].ItemList.Count(); j++)
+                {
+                    ProductDb productDb = _context.ProductDb.Single(x => x.ID == basket.ItemContainerList[i].ItemList[j].ProductId);
+                    List<AdditionalComponent> additionalComponentDbList = _context.AdditionaComponent
+                        .Where(x => basket.ItemContainerList[i].ItemList[j].AdditionalComponentIdList.Contains(x.ID))
+                        .ToList();
 
-                basketVM.Products.Add(new ProductViewModel(productDb.ProductName, 
-                    productDb.Components, orderBL.GetAdditionalComponentsName(additionalComponent), productDb.Size,
-                    productDb.Weight, finalProductValue, basket[i].Item3));
+                    itemsContainer.ProductVMList.Add(new ProductViewModel(productDb.ProductName, productDb.Components,
+                        orderBL.GetAdditionalComponentsName(additionalComponentDbList), productDb.Size,
+                        productDb.Weight, 0, basket.ItemContainerList[i].ItemList[j].Quantity, productDb.Price,
+                        orderBL.GetAdditionalComponentsPrice(additionalComponentDbList)));
+                }
+
+                orderBL.SetPromotionValues(itemsContainer, promotionId);
+                foreach (var item in itemsContainer.ProductVMList)
+                {
+                    item.FinalValue = item.ProductValue + item.AdditionalComponentsValue;
+                    baseOrderPrice += item.FinalValue;
+                }
+
+                basketVM.ItemsContainerList.Add(itemsContainer);
             }
-
-            basketVM.OrderPrice = orderBL.GetOrderValue(
-                baseOrderPrice,
-                User.IsInRole("Member"),
-                _userManager.GetUserId(User),
-                _context
-            );
+            
+            basketVM.OrderValue = orderBL.GetOrderValue(baseOrderPrice, User.IsInRole("Member"),
+                _userManager.GetUserId(User), _context);
 
             return View(basketVM);
         }
