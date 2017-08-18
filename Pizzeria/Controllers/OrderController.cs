@@ -68,6 +68,7 @@ namespace Pizzeria.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddToBasket(int productId, List<int> additionaComponentsIDs)
         {
             Models.SessionExtensions.AddProduct(HttpContext.Session, "Basket", new Tuple<int, List<int>, int>(productId, additionaComponentsIDs, 1));
@@ -116,6 +117,7 @@ namespace Pizzeria.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteFromBasket(int productIndex)
         {
             Models.SessionExtensions.DeleteProduct(HttpContext.Session, "Basket", productIndex);
@@ -159,6 +161,7 @@ namespace Pizzeria.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeliveryForm([Bind("City, Street, HouseNumber, FlatNumber, ClientName, Email, Phone, DisplayForMember")] DeliveryFormViewModel deliveryFormVM)
         {
             if (User.Identity.IsAuthenticated == false && String.IsNullOrEmpty(deliveryFormVM.Email))
@@ -301,6 +304,7 @@ namespace Pizzeria.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult OrderCompleted(string[] values)
         {
             if (values != null && values.Length != 0)
@@ -375,6 +379,7 @@ namespace Pizzeria.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditProductInBasket(int productIndex, string quantityBtn)
         {
             if(quantityBtn.Equals("+"))

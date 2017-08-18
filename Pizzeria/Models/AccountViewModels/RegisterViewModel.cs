@@ -38,8 +38,9 @@ namespace Pizzeria.Models.AccountViewModels
         public override string HouseNumber { get; set; }
 
         [Display(Name = "Nr telefonu")]
+        [DataType(DataType.PhoneNumber)]
         [Required]
-        [RegularExpression(@"^([0-9]{9})$")]
+        [RegularExpression(@"^([0-9]{9})$", ErrorMessage = "Please enter 9 digits (the first one can't be 0)")]
         public string PhoneNumber { get; set; }
     }
 }
