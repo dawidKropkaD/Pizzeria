@@ -26,7 +26,10 @@
 
         $.ajax({
             type: "POST",
-            data: { values: selectedOrders },
+            data: {
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+                values: selectedOrders
+            },
             url: '@Url.Action("OrderCompleted", "Order")',
             dataType: 'html',
             success: function (data) {

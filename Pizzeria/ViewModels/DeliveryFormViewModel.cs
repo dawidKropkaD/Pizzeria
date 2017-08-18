@@ -22,13 +22,15 @@ namespace Pizzeria.ViewModels
         public override string FlatNumber { get; set; }
 
         [Required]
+        [Display(Name = "Imię")]
         public string ClientName { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
 
+        [Display(Name = "Nr telefonu")]
         [DataType(DataType.PhoneNumber)]
-        [RegularExpression(@"^([0-9]{9})$")]
+        [RegularExpression(@"^([0-9]{9})$", ErrorMessage = "Please enter 9 digits (the first one can't be 0)")]
         public int Phone { get; set; }
 
         /// <summary>
